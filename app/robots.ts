@@ -1,25 +1,19 @@
 import type { MetadataRoute } from 'next';
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://collabcar.com';
 
   return {
     rules: [
       {
         userAgent: '*',
         allow: '/',
+        disallow: ['/api/', '/admin/'],
       },
       {
-        userAgent: [
-          'GPTBot',
-          'ClaudeBot',
-          'Google-Extended',
-          'Applebot-Extended',
-          'meta-externalagent',
-          'Amazonbot',
-          'Bytespider',
-        ],
-        disallow: '/',
+        userAgent: ['GPTBot', 'ChatGPT-User', 'Google-Extended', 'PerplexityBot', 'ClaudeBot', 'Applebot'],
+        allow: ['/', '/blog', '/blog/*', '/about', '/contact', '/planner'],
+        disallow: ['/api/'],
       },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,

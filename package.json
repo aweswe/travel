@@ -3,12 +3,15 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently -k -p \"[{name}]\" -n \"PB,NEXT\" -c \"yellow,cyan\" \"npm run pb:dev\" \"npm run dev:next\"",
+    "dev": "concurrently -k -p \"[{name}]\" -n \"PB,NEXT\" -c \"yellow,cyan\" \"bun run pb:dev\" \"bun run dev:next\"",
+    "dev:4000": "concurrently -k -p \"[{name}]\" -n \"PB,NEXT\" -c \"yellow,cyan\" \"npm run pb:dev\" \"next dev -p 4000\"",
     "dev:next": "next dev",
     "build": "next build",
     "start": "next start",
     "start:all": "concurrently -k -p \"[{name}]\" -n \"PB,NEXT\" -c \"yellow,cyan\" \"npm run pb:dev\" \"npm run start\"",
     "lint": "next lint",
+    "test": "bun run tests/seo-aeo-geo.test.ts",
+    "test:seo": "bun run tests/seo-aeo-geo.test.ts",
     "pb:dev": "./pocketbase/pocketbase serve --http=127.0.0.1:8090 --dir=./pocketbase/pb_data --migrationsDir=./pocketbase/pb_migrations --hooksDir=./pocketbase/pb_hooks",
     "pb:migrate": "./pocketbase/pocketbase migrate up --dir=./pocketbase/pb_data --migrationsDir=./pocketbase/pb_migrations --hooksDir=./pocketbase/pb_hooks"
   },

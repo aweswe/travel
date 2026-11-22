@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { ArrowUpRight, Menu, X, Sparkles } from 'lucide-react';
 import { LOGO } from '@/constants/brand';
 import { useDisclosure } from '@/hooks/use-disclosure';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 export function SiteHeader() {
   const menu = useDisclosure();
@@ -15,15 +16,19 @@ export function SiteHeader() {
       <nav className="desktop-nav" aria-label="Main navigation">
         <a href="/#destinations">Explore India</a>
         <Link href="/about">About us</Link>
+        <Link href="/blog">Guides &amp; Blog</Link>
         <a href="/#how-it-works">How it works</a>
         <Link href="/contact">Contact</Link>
         <Link href="/planner">
           <Sparkles size={15}/> AI trip planner <span className="tiny-tag">NEW</span>
         </Link>
       </nav>
-      <a className="button header-cta" href="/#enquire">
-        Plan my trip <ArrowUpRight size={17}/>
-      </a>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+        <ThemeToggle />
+        <a className="button header-cta" href="/#enquire">
+          Plan my trip <ArrowUpRight size={17}/>
+        </a>
+      </div>
       <button className="menu-toggle" {...menu.triggerProps} aria-label="Toggle navigation">
         {menu.isOpen ? <X/> : <Menu/>}
       </button>
@@ -31,10 +36,15 @@ export function SiteHeader() {
         <nav className="mobile-nav" {...menu.panelProps} aria-label="Mobile navigation">
           <a href="/#destinations" onClick={menu.close}>Explore India</a>
           <Link href="/about" onClick={menu.close}>About us</Link>
+          <Link href="/blog" onClick={menu.close}>Guides &amp; Blog</Link>
           <a href="/#how-it-works" onClick={menu.close}>How it works</a>
           <Link href="/contact" onClick={menu.close}>Contact</Link>
           <Link href="/planner" onClick={menu.close}>AI trip planner</Link>
           <a href="/#enquire" onClick={menu.close}>Plan my trip</a>
+          <div style={{ paddingTop: 12, borderTop: '1px solid var(--line)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <span style={{ fontSize: 12, color: 'var(--quiet)' }}>Theme</span>
+            <ThemeToggle />
+          </div>
         </nav>
       )}
     </header>
