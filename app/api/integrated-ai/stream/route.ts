@@ -9,6 +9,9 @@ import {
 	uploadImages,
 } from '@/lib/integrated-ai.server';
 
+export const dynamic = 'force-dynamic';
+export const maxDuration = 60; // Up to 60s for full multi-day itinerary streaming on Vercel
+
 const SSE_HEADERS = {
 	'Content-Type': 'text/event-stream',
 	'Cache-Control': 'no-cache',

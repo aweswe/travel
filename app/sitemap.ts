@@ -1,8 +1,9 @@
 import type { MetadataRoute } from 'next';
 import { BLOG_POSTS } from '@/data/blogs';
+import { getSiteUrl } from '@/lib/site-url';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://collabcar.com';
+  const baseUrl = getSiteUrl();
 
   const staticRoutes: MetadataRoute.Sitemap = [
     {

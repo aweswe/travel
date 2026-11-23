@@ -7,6 +7,7 @@ import { ScrollToTop } from '@/components/scroll-to-top';
 import { ThemeProvider } from '@/components/theme-provider';
 import { HERO } from '@/constants/brand';
 import { OrganizationSchema, WebSiteSchema, TravelAgencySchema } from '@/lib/seo-geo-schema';
+import { getSiteUrl } from '@/lib/site-url';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -17,8 +18,10 @@ export const viewport: Viewport = {
   ],
 };
 
+const siteUrl = getSiteUrl();
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://collabcar.com'),
+  metadataBase: new URL(siteUrl),
   title: {
     default: 'Collabcar | Custom India Road Trips & AI Chauffeur Planning',
     template: '%s | Collabcar India',
@@ -57,7 +60,7 @@ export const metadata: Metadata = {
     images: [HERO],
   },
   alternates: {
-    canonical: 'https://collabcar.com',
+    canonical: siteUrl,
   },
 };
 

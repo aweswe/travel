@@ -1,6 +1,7 @@
 import { LOGO } from '@/constants/brand';
+import { getSiteUrl } from '@/lib/site-url';
 
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://collabcar.com';
+export const SITE_URL = getSiteUrl();
 
 export const OrganizationSchema = {
   '@context': 'https://schema.org',
