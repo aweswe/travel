@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "concurrently -k -p \"[{name}]\" -n \"PB,NEXT\" -c \"yellow,cyan\" \"bun run pb:dev\" \"bun run dev:next\"",
     "dev:4000": "concurrently -k -p \"[{name}]\" -n \"PB,NEXT\" -c \"yellow,cyan\" \"npm run pb:dev\" \"next dev -p 4000\"",
+    "start:4000": "concurrently -k -p \"[{name}]\" -n \"PB,NEXT\" -c \"yellow,cyan\" \"bun run pb:dev\" \"next start -p 4000\"",
     "dev:next": "next dev",
     "build": "next build",
     "start": "next start",

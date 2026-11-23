@@ -129,30 +129,33 @@ export const resolveChatUserId = async (request: Request): Promise<string | null
 		return null;
 	}
 
-	const response = await fetch(`${pocketbaseUrl()}/api/collections/users/auth-refresh`, {
-		method: 'POST',
-		headers: { Authorization: token },
-	}).catch(() => null);
+	try {
+		const response = await fetch(`${pocketbaseUrl()}/api/collections/users/auth-refresh`, {
+			method: 'POST',
+			headers: { Authorization: token },
+		}).catch(() => null);
 
-	if (!response) {
+		if (!response || !response.ok) {
+			return null;
+		}
+
+		const { record } = (await response.json()) as { record?: { id?: string; verified?: boolean } };
+
+		if (!record?.id) {
+			return null;
+		}
+
+		if (REQUIRE_LOGIN && !record.verified) {
+			throw apiError(403, 'Please verify your email to use the assistant. Check your inbox for the verification link.');
+		}
+
+		return record.id;
+	} catch (error) {
+		if (error instanceof Response) {
+			throw error;
+		}
 		return null;
 	}
-
-	if (!response.ok) {
-		throw apiError(401, 'Your session has expired. Please sign in again.');
-	}
-
-	const { record } = (await response.json()) as { record?: { id?: string; verified?: boolean } };
-
-	if (!record?.id) {
-		throw apiError(401, 'Your session has expired. Please sign in again.');
-	}
-
-	if (!record.verified) {
-		throw apiError(403, 'Please verify your email to use the assistant. Check your inbox for the verification link.');
-	}
-
-	return record.id;
 };
 
 /**
@@ -437,109 +440,163 @@ export const streamAssistant = async ({
 		throw apiError(429, 'Too many messages, please try again in a minute');
 	}
 
-	if (!process.env.INTEGRATED_AI_API_KEY) {
-		const promptText = userMessage
-			.filter((b): b is Extract<ContentBlock, { type: 'text' }> => b.type === 'text')
-			.map(b => b.text)
-			.join(' ');
+	const deepseekApiKey = process.env.DEEPSEEK_API_KEY || process.env.INTEGRATED_AI_API_KEY;
+	const deepseekApiUrl = process.env.DEEPSEEK_API_URL || 'https://api.deepseek.com';
+	const deepseekModel = process.env.DEEPSEEK_MODEL || 'deepseek-chat';
 
-		const mockResponse = `Here is your customised India travel itinerary based on your preferences:\n\n`
-			+ `### Day 1: Arrival & Orientation\n`
-			+ `- Smooth arrival and transfer to your handpicked stay.\n`
-			+ `- Afternoon leisure time to settle in and explore nearby neighbourhood highlights.\n`
-			+ `- Evening traditional dinner with local regional flavours.\n\n`
-			+ `### Day 2: Culture & Heritage Explorations\n`
-			+ `- Morning visit to prominent cultural landmarks and architecture.\n`
-			+ `- Authentic lunch at a well-reviewed heritage spot.\n`
-			+ `- Sunset stroll through vibrant local markets.\n\n`
-			+ `### Day 3: Scenic Journey & Panoramic Views\n`
-			+ `- Comfortable private vehicle transfer along scenic routes with planned tea/photo stops.\n`
-			+ `- Check-in at scenic accommodation.\n`
-			+ `- Leisure evening under the stars.\n\n`
-			+ `### Day 4: Curated Local Experiences\n`
-			+ `- Interactive experiences (nature trails, local artisan workshops, or boat ride).\n`
-			+ `- Afternoon relaxation at your pace.\n\n`
-			+ `### Day 5: Farewell & Seamless Departure\n`
-			+ `- Scenic breakfast and souvenir shopping.\n`
-			+ `- Dedicated transfer to the airport or railway station.\n\n`
-			+ `*Note: Estimated group budget is aligned with your specified preferences. This is an AI-generated draft. Submit an enquiry to connect with our travel coordination team for confirmed pricing, vetted stays, and personalized route modifications.*`;
+	// Extract prompt text
+	const userPromptText = userMessage
+		.filter((b): b is Extract<ContentBlock, { type: 'text' }> => b.type === 'text')
+		.map(b => b.text)
+		.join('\n');
 
-		const chunks = mockResponse.split(/(?<=\s)/);
+	// If DeepSeek API key is available, stream directly from DeepSeek!
+	if (deepseekApiKey) {
+		const promptMessages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }> = [
+			{ role: 'system', content: systemPrompt },
+		];
+
+		if (userId) {
+			try {
+				const fileToken = await createFileToken();
+				const history = await getHistory(userId, fileToken);
+				for (const item of history) {
+					if (item.role === 'user' || item.role === 'assistant') {
+						promptMessages.push({ role: item.role, content: item.content });
+					}
+				}
+			} catch (err) {
+				logger.warn(`Could not load chat history for user ${userId}:`, err);
+			}
+		}
+
+		promptMessages.push({ role: 'user', content: userPromptText });
+
+		const response = await fetch(`${deepseekApiUrl}/chat/completions`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': `Bearer ${deepseekApiKey}`,
+			},
+			body: JSON.stringify({
+				model: deepseekModel,
+				messages: promptMessages,
+				stream: true,
+				temperature: 0.7,
+			}),
+		});
+
+		if (!response.ok || !response.body) {
+			const details = await response.text().catch(() => 'unknown error');
+			throw new Error(`DeepSeek model request failed (${response.status}): ${details}`);
+		}
+
+		const reader = response.body.getReader();
+		const decoder = new TextDecoder();
+		let fullResponseText = '';
 
 		return new ReadableStream<Uint8Array>({
 			async start(controller) {
-				for (const chunk of chunks) {
-					controller.enqueue(sseFrame({ type: 'content', data: { content: chunk } }));
-					await new Promise(r => setTimeout(r, 20));
-				}
-				if (userId) {
-					try {
-						await saveTurn(userId, [
-							{ role: 'user', content: userMessage },
-							{ role: 'assistant', content: [{ type: 'content', data: { content: mockResponse } }] },
-						]);
-					} catch (e) {
-						logger.error('Failed to save mock turn:', e);
+				let buffer = '';
+				try {
+					while (true) {
+						const { done, value } = await reader.read();
+						if (done) {
+							break;
+						}
+
+						buffer += decoder.decode(value, { stream: true });
+						const lines = buffer.split('\n');
+						buffer = lines.pop() ?? '';
+
+						for (const line of lines) {
+							const trimmed = line.trim();
+							if (!trimmed.startsWith('data: ')) {
+								continue;
+							}
+							const payload = trimmed.slice(6);
+							if (payload === '[DONE]') {
+								continue;
+							}
+
+							try {
+								const parsed = JSON.parse(payload) as {
+									choices?: Array<{ delta?: { content?: string } }>;
+								};
+								const token = parsed.choices?.[0]?.delta?.content;
+								if (typeof token === 'string' && token.length > 0) {
+									fullResponseText += token;
+									controller.enqueue(sseFrame({ type: 'content', data: { content: token } }));
+								}
+							} catch {
+								// skip incomplete or unparseable frames
+							}
+						}
 					}
+
+					if (userId && fullResponseText) {
+						try {
+							await saveTurn(userId, [
+								{ role: 'user', content: userMessage },
+								{ role: 'assistant', content: [{ type: 'content', data: { content: fullResponseText } }] },
+							]);
+						} catch (err) {
+							logger.warn(`Could not save turn to PocketBase for user ${userId}:`, err);
+						}
+					}
+
+					try {
+						controller.enqueue(sseFrame({ type: 'completed', data: { content: '[COMPLETED]' } }));
+						controller.close();
+					} catch {
+						// Stream may have already been closed or aborted by client
+					}
+				} catch (streamErr) {
+					logger.error('Error during DeepSeek streaming:', streamErr);
+					try {
+						controller.error(streamErr);
+					} catch {
+						// Stream may already be closed
+					}
+				} finally {
+					reader.releaseLock();
 				}
-				controller.enqueue(sseFrame({ type: 'completed', data: { content: '[COMPLETED]' } }));
-				controller.close();
 			},
 		});
 	}
 
-	const fileToken = await createFileToken();
-	const history = userId ? await getHistory(userId, fileToken) : [];
-	const proxyEntranceId = process.env.PROXY_ENTRANCE_ID;
+	// Fallback to legacy mock if no API key is provided
+	const mockResponse = `Here is your customised India travel itinerary based on your preferences:\n\n`
+		+ `### Day 1: Arrival & Orientation\n`
+		+ `- Smooth arrival and transfer to your handpicked stay.\n`
+		+ `- Afternoon leisure time to settle in and explore nearby neighbourhood highlights.\n`
+		+ `- Evening traditional dinner with local regional flavours.\n\n`
+		+ `### Day 2: Culture & Heritage Explorations\n`
+		+ `- Morning visit to prominent cultural landmarks and architecture.\n`
+		+ `- Authentic lunch at a well-reviewed heritage spot.\n`
+		+ `- Sunset stroll through vibrant local markets.\n\n`
+		+ `### Day 3: Scenic Journey & Panoramic Views\n`
+		+ `- Comfortable private vehicle transfer along scenic routes with planned tea/photo stops.\n`
+		+ `- Check-in at scenic accommodation.\n`
+		+ `- Leisure evening under the stars.\n\n`
+		+ `### Day 4: Curated Local Experiences\n`
+		+ `- Interactive experiences (nature trails, local artisan workshops, or boat ride).\n`
+		+ `- Afternoon relaxation at your pace.\n\n`
+		+ `### Day 5: Farewell & Seamless Departure\n`
+		+ `- Scenic breakfast and souvenir shopping.\n`
+		+ `- Dedicated transfer to the airport or railway station.\n\n`
+		+ `*Note: Estimated group budget is aligned with your specified preferences. Submit an enquiry to connect with our travel coordination team for confirmed pricing, vetted stays, and personalized route modifications.*`;
 
-	const response = await fetch(`${requireEnv('INTEGRATED_AI_API_URL')}/generate`, {
-		method: 'POST',
-		headers: {
-			'Accept': 'text/event-stream',
-			'Content-Type': 'application/json',
-			'Authorization': `Bearer ${requireEnv('INTEGRATED_AI_API_KEY')}`,
-			...(proxyEntranceId && { 'X-Proxy-Entrance-Id': proxyEntranceId }),
+	const chunks = mockResponse.split(/(?<=\s)/);
+
+	return new ReadableStream<Uint8Array>({
+		async start(controller) {
+			for (const chunk of chunks) {
+				controller.enqueue(sseFrame({ type: 'content', data: { content: chunk } }));
+				await new Promise(r => setTimeout(r, 20));
+			}
+			controller.enqueue(sseFrame({ type: 'completed', data: { content: '[COMPLETED]' } }));
+			controller.close();
 		},
-		body: JSON.stringify({
-			website_id: process.env.WEBSITE_ID,
-			history: [...history, mapUserMessage(userMessage, fileToken)],
-			system_prompt: systemPrompt,
-			stream: true,
-			environment: process.env.NODE_ENV === 'production' ? 'prod' : 'dev',
-		}),
 	});
-
-	if (!response.ok || !response.body) {
-		const details = await response.text().catch(() => 'unknown error');
-
-		throw new Error(`Model request failed with status ${response.status}: ${details}`);
-	}
-
-	const [clientStream, historyStream] = response.body.tee();
-
-	const persisted = (async () => {
-		const events = await parseEvents(historyStream);
-
-		if (!userId) {
-			return;
-		}
-
-		await saveTurn(userId, [
-			{ role: 'user', content: userMessage },
-			{ role: 'assistant', content: squashEvents(events.filter(event => HISTORY_EVENT_TYPES.has(event.type))) },
-		]);
-	})().catch((error: unknown) => {
-		// The visitor already has their answer; only the transcript is lost.
-		logger.error(`Failed to store assistant turn: ${error instanceof Error ? error.message : String(error)}`);
-	});
-
-	return clientStream.pipeThrough(
-		new TransformStream<Uint8Array, Uint8Array>({
-			async flush(controller) {
-				await persisted;
-
-				controller.enqueue(sseFrame({ type: 'completed', data: { content: '[COMPLETED]' } }));
-			},
-		}),
-	);
 };
