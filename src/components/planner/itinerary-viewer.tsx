@@ -172,7 +172,7 @@ export function ItineraryViewer({
     <div className="itinerary-viewer-container">
       {/* Top Banner with Dynamic Theming */}
       <div
-        className="viewer-hero-banner"
+        className="viewer-hero-banner rounded-xl"
         style={{
           background: currentTheme.heroBg,
           borderLeft: `4px solid ${currentTheme.accentColor}`,
@@ -181,22 +181,22 @@ export function ItineraryViewer({
         <div className="viewer-hero-content">
           <div className="viewer-hero-eyebrow">
             <span
-              className="theme-pill"
+              className="theme-pill rounded-lg"
               style={{ color: currentTheme.accentColor, borderColor: currentTheme.accentColor }}
             >
               {currentTheme.badge}
             </span>
             <span className="ai-verified-tag">
-              <Sparkles size={13} /> DeepSeek AI Crafted
+              <Sparkles size={13} /> Collabcar AI Crafted
             </span>
           </div>
 
-          <h2 className="viewer-hero-title">{itinerary.title || `${destination} Custom Road Itinerary`}</h2>
+          <h2 className="viewer-hero-title text-balance">{itinerary.title || `${destination} Custom Road Itinerary`}</h2>
           <p className="viewer-hero-route">
             <MapPin size={15} style={{ color: currentTheme.accentColor }} />
-            {itinerary.overview.route || `${departure || 'Departure City'} ➔ ${destination} Circuit`}
+            <span>{itinerary.overview.route || `${departure || 'Departure City'} ➔ ${destination} Circuit`}</span>
           </p>
-          <p className="viewer-hero-tagline">{currentTheme.tagline}</p>
+          <p className="viewer-hero-tagline text-pretty">{currentTheme.tagline}</p>
         </div>
 
         {/* Quick Summary Pill Grid */}
@@ -204,12 +204,12 @@ export function ItineraryViewer({
           <div className="viewer-stat-item">
             <Calendar size={14} />
             <span>Duration:</span>
-            <strong>{days} Days</strong>
+            <strong className="tabular-nums">{days} Days</strong>
           </div>
           <div className="viewer-stat-item">
             <Users size={14} />
             <span>Travellers:</span>
-            <strong>{travellers} People</strong>
+            <strong className="tabular-nums">{travellers} People</strong>
           </div>
           <div className="viewer-stat-item">
             <Car size={14} />
@@ -251,15 +251,16 @@ export function ItineraryViewer({
         </div>
 
         {/* Action Buttons */}
-        <div className="viewer-quick-actions">
+        <div className="viewer-quick-actions flex-wrap gap-2">
           <button
             type="button"
             onClick={handleCopy}
             className="action-btn"
             title="Copy Itinerary to clipboard"
+            aria-label="Copy entire itinerary to clipboard"
           >
             {copied ? <Check size={14} className="text-emerald-500" /> : <Copy size={14} />}
-            {copied ? 'Copied!' : 'Copy'}
+            <span>{copied ? 'Copied!' : 'Copy'}</span>
           </button>
 
           <button
@@ -270,8 +271,9 @@ export function ItineraryViewer({
             }}
             className="action-btn primary-action"
             title="Download or Print official Collabcar PDF"
+            aria-label="Download or Print official Collabcar PDF"
           >
-            <Printer size={14} /> Download PDF
+            <Printer size={14} /> <span>Download PDF</span>
           </button>
 
           {isAuthed && onSave && (
@@ -281,21 +283,23 @@ export function ItineraryViewer({
               disabled={saving}
               className="action-btn"
               title="Save to your private Collabcar account"
+              aria-label="Save to your account"
             >
-              <Save size={14} /> {saving ? 'Saving…' : draftId ? 'Update Draft' : 'Save'}
+              <Save size={14} /> <span>{saving ? 'Saving…' : draftId ? 'Update Draft' : 'Save'}</span>
             </button>
           )}
 
           <Link
             href={`/?destination=${encodeURIComponent(destination || itinerary.title)}#enquire`}
-            className="action-btn quote-action"
+            className="action-btn quote-action whitespace-nowrap"
+            aria-label="Book journey with verified AITP chauffeur"
             onClick={() => {
               if (typeof window !== 'undefined') {
                 sessionStorage.setItem('collabcar_draft_itinerary', rawText.slice(0, 10000));
               }
             }}
           >
-            Book with Chauffeur <ArrowUpRight size={14} />
+            <span>Book with Chauffeur</span> <ArrowUpRight size={14} />
           </Link>
         </div>
       </div>
@@ -305,7 +309,7 @@ export function ItineraryViewer({
         <div className="visual-journey-body space-y-6">
           {/* Timeline Controls & Quick Day Navigator */}
           {itinerary.days.length > 0 && (
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-stone-50 dark:bg-stone-900/80 rounded-lg border border-stone-200 dark:border-stone-800">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-stone-50 dark:bg-stone-900/80 rounded-xl border border-stone-200 dark:border-stone-800">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-xs font-bold text-stone-900 dark:text-stone-100 flex items-center gap-1.5 mr-1">
                   <Navigation size={14} className="text-red-600" />
@@ -316,7 +320,7 @@ export function ItineraryViewer({
                     key={day.dayNumber}
                     type="button"
                     onClick={() => scrollToDay(day.dayNumber)}
-                    className={`text-xs px-2.5 py-1 rounded-md border transition-all ${
+                    className={`text-xs px-2.5 py-1 rounded-lg border tabular-nums transition-all ${
                       expandedDays[day.dayNumber]
                         ? 'bg-red-600 text-white border-red-600 font-bold shadow-xs'
                         : 'bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-300 border-stone-200 dark:border-stone-700 hover:border-red-400'
@@ -331,7 +335,7 @@ export function ItineraryViewer({
               <button
                 type="button"
                 onClick={toggleExpandAll}
-                className="flex items-center gap-1.5 text-xs font-bold text-stone-700 dark:text-stone-200 hover:text-red-600 dark:hover:text-red-400 px-3 py-1.5 rounded-md border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 transition-colors shrink-0"
+                className="flex items-center gap-1.5 text-xs font-bold text-stone-700 dark:text-stone-200 hover:text-red-600 dark:hover:text-red-400 px-3 py-1.5 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 transition-colors shrink-0"
               >
                 {areAllExpanded ? (
                   <>
@@ -348,8 +352,8 @@ export function ItineraryViewer({
 
           {/* Enhanced Day-by-Day Timeline Cards with Collapsible Details */}
           <div className="timeline-cards-list relative">
-            {/* Visual Timeline Connector Line */}
-            <div className="absolute left-[37px] top-6 bottom-6 w-0.5 bg-gradient-to-b from-red-600 via-stone-300 dark:via-stone-700 to-amber-500 hidden md:block pointer-events-none" />
+            {/* Visual Timeline Connector Line (Clean Neutral Accent) */}
+            <div className="absolute left-[37px] top-6 bottom-6 w-0.5 bg-stone-200 dark:bg-stone-800 hidden md:block pointer-events-none" />
 
             {itinerary.days.length > 0 ? (
               itinerary.days.map((day) => {
@@ -360,7 +364,7 @@ export function ItineraryViewer({
                   <div
                     key={day.dayNumber}
                     id={`day-card-${day.dayNumber}`}
-                    className={`day-card relative transition-all duration-200 ${
+                    className={`day-card relative rounded-xl transition-all duration-200 ${
                       isExpanded
                         ? 'shadow-md ring-1 ring-stone-200 dark:ring-stone-800'
                         : 'opacity-95 hover:opacity-100 hover:shadow-sm'
@@ -381,24 +385,24 @@ export function ItineraryViewer({
                     >
                       <div className="flex items-center gap-3 md:gap-4 flex-1 min-w-0">
                         {/* Day Number Badge */}
-                        <div className="day-number-badge shrink-0">
+                        <div className="day-number-badge shrink-0 rounded-lg">
                           <span>Day</span>
-                          <strong>0{day.dayNumber}</strong>
+                          <strong className="tabular-nums">0{day.dayNumber}</strong>
                         </div>
 
                         {/* Title & Transit Summary */}
                         <div className="day-header-info flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <h3 className="day-title text-stone-900 dark:text-stone-100 group-hover:text-red-600 transition-colors">
+                            <h3 className="day-title text-stone-900 dark:text-stone-100 group-hover:text-red-600 transition-colors text-balance">
                               {day.title}
                             </h3>
                             {day.dayNumber === 1 && (
-                              <span className="text-[9.5px] font-bold bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 px-2 py-0.5 rounded-full">
+                              <span className="text-[9.5px] font-bold bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 px-2 py-0.5 rounded-lg">
                                 Departure Kickoff
                               </span>
                             )}
                             {day.dayNumber === itinerary.days.length && (
-                              <span className="text-[9.5px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 px-2 py-0.5 rounded-full">
+                              <span className="text-[9.5px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 px-2 py-0.5 rounded-lg">
                                 Final Return Circuit
                               </span>
                             )}
@@ -414,7 +418,7 @@ export function ItineraryViewer({
 
                             {/* Sneak peek text when collapsed */}
                             {!isExpanded && day.stay && (
-                              <span className="hidden sm:inline-block text-[11px] text-stone-400 truncate max-w-xs">
+                              <span className="hidden sm:inline-block text-[11px] text-stone-400 truncate max-w-xs text-pretty">
                                 🏨 {day.stay}
                               </span>
                             )}
@@ -430,8 +434,9 @@ export function ItineraryViewer({
                             e.stopPropagation();
                             handleCopyDay(day.dayNumber, dayPlainText);
                           }}
-                          className="p-1.5 rounded-md hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-500 hover:text-stone-900 dark:hover:text-white transition-colors"
+                          className="p-1.5 rounded-lg hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-500 hover:text-stone-900 dark:hover:text-white transition-colors"
                           title="Copy Day Summary"
+                          aria-label={`Copy Day ${day.dayNumber} summary`}
                         >
                           {copiedDay === day.dayNumber ? (
                             <Check size={14} className="text-emerald-500" />
@@ -440,7 +445,7 @@ export function ItineraryViewer({
                           )}
                         </button>
 
-                        <div className="flex items-center gap-1 text-xs font-semibold text-stone-600 dark:text-stone-300 px-2.5 py-1 rounded-md bg-stone-100 dark:bg-stone-800 group-hover:bg-red-50 dark:group-hover:bg-red-950/40 group-hover:text-red-600 transition-colors">
+                        <div className="flex items-center gap-1 text-xs font-semibold text-stone-600 dark:text-stone-300 px-2.5 py-1 rounded-lg bg-stone-100 dark:bg-stone-800 group-hover:bg-red-50 dark:group-hover:bg-red-950/40 group-hover:text-red-600 transition-colors">
                           <span className="hidden sm:inline">{isExpanded ? 'Less' : 'Details'}</span>
                           {isExpanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
                         </div>
@@ -453,36 +458,36 @@ export function ItineraryViewer({
                         {/* Time Slots 3-Column Grid */}
                         <div className="time-slots-grid">
                           {day.morning && (
-                            <div className="time-slot-card morning bg-white dark:bg-stone-900/90 border border-stone-200 dark:border-stone-800">
-                              <div className="slot-title text-amber-600 dark:text-amber-400 font-bold flex items-center gap-1.5">
+                            <div className="time-slot-card morning bg-white dark:bg-stone-900/90 border border-stone-200 dark:border-stone-800 rounded-lg">
+                              <div className="slot-title text-amber-700 dark:text-amber-400 font-bold flex items-center gap-1.5">
                                 <Sunrise size={16} />
                                 <span>Morning Sightseeing</span>
                               </div>
-                              <p className="text-xs text-stone-700 dark:text-stone-300 mt-1 leading-relaxed">
+                              <p className="text-xs text-stone-700 dark:text-stone-300 mt-1 leading-relaxed text-pretty">
                                 {day.morning}
                               </p>
                             </div>
                           )}
 
                           {day.afternoon && (
-                            <div className="time-slot-card afternoon bg-white dark:bg-stone-900/90 border border-stone-200 dark:border-stone-800">
-                              <div className="slot-title text-blue-600 dark:text-blue-400 font-bold flex items-center gap-1.5">
+                            <div className="time-slot-card afternoon bg-white dark:bg-stone-900/90 border border-stone-200 dark:border-stone-800 rounded-lg">
+                              <div className="slot-title text-sky-700 dark:text-sky-400 font-bold flex items-center gap-1.5">
                                 <UtensilsCrossed size={16} />
                                 <span>Afternoon &amp; Lunch</span>
                               </div>
-                              <p className="text-xs text-stone-700 dark:text-stone-300 mt-1 leading-relaxed">
+                              <p className="text-xs text-stone-700 dark:text-stone-300 mt-1 leading-relaxed text-pretty">
                                 {day.afternoon}
                               </p>
                             </div>
                           )}
 
                           {day.evening && (
-                            <div className="time-slot-card evening bg-white dark:bg-stone-900/90 border border-stone-200 dark:border-stone-800">
-                              <div className="slot-title text-purple-600 dark:text-purple-400 font-bold flex items-center gap-1.5">
+                            <div className="time-slot-card evening bg-white dark:bg-stone-900/90 border border-stone-200 dark:border-stone-800 rounded-lg">
+                              <div className="slot-title text-rose-700 dark:text-rose-400 font-bold flex items-center gap-1.5">
                                 <Sunset size={16} />
                                 <span>Evening &amp; Sunset</span>
                               </div>
-                              <p className="text-xs text-stone-700 dark:text-stone-300 mt-1 leading-relaxed">
+                              <p className="text-xs text-stone-700 dark:text-stone-300 mt-1 leading-relaxed text-pretty">
                                 {day.evening}
                               </p>
                             </div>
@@ -495,7 +500,7 @@ export function ItineraryViewer({
                             <span className="stay-label text-emerald-800 dark:text-emerald-300 font-bold text-xs flex items-center gap-1.5 mb-1">
                               <BedDouble size={15} /> Recommended Night Stay &amp; Rest:
                             </span>
-                            <p className="text-xs text-stone-800 dark:text-stone-200 leading-relaxed font-medium">
+                            <p className="text-xs text-stone-800 dark:text-stone-200 leading-relaxed font-medium text-pretty">
                               {day.stay}
                             </p>
                           </div>
@@ -511,7 +516,7 @@ export function ItineraryViewer({
                               {day.otherBullets.map((bullet, idx) => (
                                 <li key={idx} className="flex items-start gap-2 text-xs text-stone-700 dark:text-stone-300">
                                   <MapPin size={13} className="text-red-500 shrink-0 mt-0.5" />
-                                  <span>{bullet}</span>
+                                  <span className="text-pretty">{bullet}</span>
                                 </li>
                               ))}
                             </ul>
@@ -523,7 +528,7 @@ export function ItineraryViewer({
                 );
               })
             ) : (
-              <div className="raw-stream-view p-4 bg-stone-50 dark:bg-stone-900 rounded-lg border border-stone-200 dark:border-stone-800">
+              <div className="raw-stream-view p-4 bg-stone-50 dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-800">
                 <pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit' }}>{rawText}</pre>
               </div>
             )}
@@ -531,12 +536,12 @@ export function ItineraryViewer({
 
           {/* Budget Breakdown Table */}
           {itinerary.budget.length > 0 && (
-            <div className="visual-budget-section mt-8">
+            <div className="visual-budget-section mt-8 rounded-xl">
               <div className="section-title-bar">
                 <span className="eyebrow">TRANSPARENT COSTS</span>
-                <h3>Estimated Group Budget &amp; Inclusions (₹)</h3>
+                <h3 className="text-balance">Estimated Group Budget &amp; Inclusions (₹)</h3>
               </div>
-              <div className="budget-table-wrapper">
+              <div className="budget-table-wrapper rounded-xl overflow-hidden border border-stone-200 dark:border-stone-800">
                 <table className="budget-table">
                   <thead>
                     <tr>
@@ -551,8 +556,8 @@ export function ItineraryViewer({
                       return (
                         <tr key={idx} className={isTotal ? 'total-row' : ''}>
                           <td><strong>{item.category}</strong></td>
-                          <td className="cost-cell">{item.cost}</td>
-                          <td className="details-cell">{item.details || 'Standard Collabcar coordination'}</td>
+                          <td className="cost-cell tabular-nums font-mono">{item.cost}</td>
+                          <td className="details-cell text-pretty">{item.details || 'Standard Collabcar coordination'}</td>
                         </tr>
                       );
                     })}
@@ -564,16 +569,16 @@ export function ItineraryViewer({
 
           {/* Chauffeur On-Road Advice */}
           {itinerary.tips.length > 0 && (
-            <div className="chauffeur-tips-section mt-8">
+            <div className="chauffeur-tips-section mt-8 rounded-xl">
               <div className="section-title-bar">
                 <span className="eyebrow">CHAUFFEUR INSIGHTS</span>
-                <h3>On-Road Advice &amp; Safety Realities</h3>
+                <h3 className="text-balance">On-Road Advice &amp; Safety Realities</h3>
               </div>
               <div className="tips-cards-grid">
                 {itinerary.tips.map((tip, idx) => (
-                  <div key={idx} className="tip-card">
-                    <span className="tip-index">0{idx + 1}</span>
-                    <p>{tip}</p>
+                  <div key={idx} className="tip-card rounded-xl">
+                    <span className="tip-index rounded-lg tabular-nums">0{idx + 1}</span>
+                    <p className="text-pretty">{tip}</p>
                   </div>
                 ))}
               </div>
@@ -600,12 +605,12 @@ export function ItineraryViewer({
       {activeTab === 'editor' && (
         <div className="editor-tab-wrapper">
           <div className="editor-header">
-            <span className="text-xs text-stone-500 dark:text-stone-400">
+            <span className="text-xs text-stone-500 dark:text-stone-400 text-pretty">
               You can edit any line of this markdown itinerary. Changes will immediately sync to the Visual and PDF views.
             </span>
           </div>
           <textarea
-            className="itinerary-editor-enhanced text-stone-900 dark:text-stone-100 bg-white dark:bg-stone-900"
+            className="itinerary-editor-enhanced text-stone-900 dark:text-stone-100 bg-white dark:bg-stone-900 rounded-xl p-4 text-xs font-mono leading-relaxed outline-none focus:ring-2 focus:ring-red-600/30"
             value={rawText}
             onChange={(e) => onRawTextChange(e.target.value)}
             disabled={busy}
@@ -615,16 +620,16 @@ export function ItineraryViewer({
       )}
 
       {/* Quick AI Refinements Section */}
-      <div className="refinement-container mt-8">
-        <span className="eyebrow">POWERED BY DEEPSEEK AI</span>
-        <h4>Refine &amp; Customize This Route</h4>
+      <div className="refinement-container mt-8 rounded-xl">
+        <span className="eyebrow">POWERED BY COLLABCAR AI</span>
+        <h4 className="text-balance">Refine &amp; Customize This Route</h4>
 
         <div className="quick-chips-wrapper">
           {quickRefinements.map((chip, idx) => (
             <button
               key={idx}
               type="button"
-              className="refinement-chip"
+              className="refinement-chip rounded-lg"
               disabled={busy}
               onClick={() => onRefine(chip.prompt)}
             >
@@ -650,9 +655,9 @@ export function ItineraryViewer({
             onChange={(e) => setCustomRefinement(e.target.value)}
             disabled={busy}
             maxLength={1000}
-            className="text-stone-900 dark:text-stone-100 bg-white dark:bg-stone-900"
+            className="text-stone-900 dark:text-stone-100 bg-white dark:bg-stone-900 rounded-xl h-11 px-4 text-xs focus:ring-2 focus:ring-red-600/30 outline-none"
           />
-          <button type="submit" className="button" disabled={busy || !customRefinement.trim()}>
+          <button type="submit" className="button rounded-xl h-11 px-5 font-bold" disabled={busy || !customRefinement.trim()}>
             {busy ? 'Refining…' : 'Refine with AI'} <Sparkles size={15} />
           </button>
         </form>

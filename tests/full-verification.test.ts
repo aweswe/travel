@@ -111,7 +111,7 @@ describe('Full Application Verification Suite', () => {
 
     it('includes the 5-stage progressive loading stepper with multi-stage cues', () => {
       expect(tripPlannerTsx).toContain('LOADING_STAGES');
-      expect(tripPlannerTsx).toContain('Connecting to DeepSeek AI Engine');
+      expect(tripPlannerTsx).toContain('Connecting to Collabcar AI Engine');
       expect(tripPlannerTsx).toContain('Analyzing terrain & road conditions');
       expect(tripPlannerTsx).toContain('Configuring AITP chauffeur logistics');
       expect(tripPlannerTsx).toContain('Curating day-by-day stops & stays');
@@ -216,6 +216,41 @@ describe('Full Application Verification Suite', () => {
       const res = await fetch('http://localhost:4000/');
       const html = await res.text();
       expect(html).toContain('Collabcar');
+    });
+  });
+
+  describe('5. Baseline UI Constraints & Zero Vendor AI Purge Verification', () => {
+    const globalsCss = fs.readFileSync(path.join(ROOT_DIR, 'app/globals.css'), 'utf-8');
+    const plannerPage = fs.readFileSync(path.join(ROOT_DIR, 'app/planner/page.tsx'), 'utf-8');
+    const tripPlannerTsx = fs.readFileSync(path.join(ROOT_DIR, 'src/components/planner/trip-planner.tsx'), 'utf-8');
+    const itineraryViewerTsx = fs.readFileSync(path.join(ROOT_DIR, 'src/components/planner/itinerary-viewer.tsx'), 'utf-8');
+    const itineraryPdfTsx = fs.readFileSync(path.join(ROOT_DIR, 'src/components/planner/itinerary-pdf.tsx'), 'utf-8');
+
+    it('confirms 100% zero user-facing DeepSeek or DeepSeek AI references across UI copy and metadata', () => {
+      expect(plannerPage.toLowerCase()).not.toContain('deepseek');
+      expect(tripPlannerTsx.toLowerCase()).not.toContain('deepseek');
+      expect(itineraryViewerTsx.toLowerCase()).not.toContain('deepseek');
+      expect(itineraryPdfTsx.toLowerCase()).not.toContain('deepseek');
+      expect(globalsCss.toLowerCase()).not.toContain('deepseek');
+    });
+
+    it('enforces unified border-radius tokens (--radius: 12px, --radius-sm: 8px, --radius-lg: 16px)', () => {
+      expect(globalsCss).toContain('--radius: 12px;');
+      expect(globalsCss).toContain('--radius-sm: 8px;');
+      expect(globalsCss).toContain('--radius-lg: 16px;');
+    });
+
+    it('enforces modern typography hierarchy with text-balance and text-pretty', () => {
+      expect(globalsCss).toContain('text-wrap: balance;');
+      expect(globalsCss).toContain('text-wrap: pretty;');
+      expect(globalsCss).toContain('font-variant-numeric: tabular-nums;');
+    });
+
+    it('protects mobile responsiveness with safe-area-inset and dvh sizing', () => {
+      expect(globalsCss).toContain('safe-area-inset-bottom');
+      expect(globalsCss).toContain('safe-area-inset-top');
+      expect(itineraryPdfTsx).toContain('100dvh');
+      expect(globalsCss).toContain('@media (prefers-reduced-motion: reduce)');
     });
   });
 });

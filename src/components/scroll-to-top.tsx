@@ -44,8 +44,8 @@ export function ScrollToTop() {
       <style jsx>{`
         .scroll-to-top-container {
           position: fixed;
-          bottom: 28px;
-          right: 28px;
+          bottom: calc(28px + env(safe-area-inset-bottom, 0px));
+          right: calc(28px + env(safe-area-inset-right, 0px));
           z-index: 45;
           animation: fadeIn 0.25s ease-out forwards;
         }

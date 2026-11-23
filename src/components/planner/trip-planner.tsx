@@ -210,7 +210,7 @@ const STAY_OPTIONS = [
 
 const LOADING_STAGES = [
   {
-    title: 'Connecting to DeepSeek AI Engine...',
+    title: 'Connecting to Collabcar AI Engine...',
     description: 'Initializing neural road intelligence stream and highway terrain data',
     icon: Wifi,
   },
@@ -506,19 +506,26 @@ export function TripPlanner() {
           margin-left: 4px;
           vertical-align: middle;
           animation: typewriterGlow 0.9s infinite;
-          box-shadow: 0 0 8px rgba(215, 62, 36, 0.8);
-          border-radius: 1px;
+          border-radius: 2px;
         }
         .car-tracer-icon {
           animation: carTravel 3s ease-in-out infinite alternate;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .route-dash-animated,
+          .waypoint-ping,
+          .typewriter-cursor,
+          .car-tracer-icon {
+            animation: none !important;
+          }
         }
       `}</style>
 
       {/* Heading Banner */}
       <div className="planner-heading">
         <span className="eyebrow"><Sparkles size={17} /> THE COLLABCAR AI TRIP PLANNER</span>
-        <h1>Your imagination.<br /><span>A route to match.</span></h1>
-        <p>Powered by DeepSeek AI: Craft realistic day-by-day road journeys with verified AITP commercial chauffeurs across 28+ Indian states.</p>
+        <h1 className="text-balance">Your imagination.<br /><span>A route to match.</span></h1>
+        <p className="text-pretty">Powered by Collabcar Route Intelligence: Craft realistic day-by-day road journeys with verified AITP commercial chauffeurs across 28+ Indian states.</p>
       </div>
 
       {/* Account Status Strip */}
@@ -546,16 +553,42 @@ export function TripPlanner() {
       <div className="planner-layout">
         {/* Left Column: Clean & Minimal Preferences Form */}
         <div className="planner-sidebar">
-          <form className="planner-config" onSubmit={configure}>
+          <form className="planner-config rounded-xl" onSubmit={configure}>
             <div className="border-b border-stone-200 dark:border-stone-800 pb-3">
               <span className="eyebrow block text-stone-500">TRIP DETAILS</span>
-              <h2 className="text-lg font-bold text-stone-900 dark:text-stone-100 tracking-tight">
+              <h2 className="text-lg font-bold text-stone-900 dark:text-stone-100 tracking-tight text-balance">
                 Where would you like to go?
               </h2>
             </div>
 
+            {/* Popular Curated Circuit Presets */}
+            <div className="space-y-1.5">
+              <span className="text-[10px] font-bold tracking-wider text-stone-500 uppercase block">
+                Popular Curated Circuits
+              </span>
+              <div className="flex flex-wrap gap-1.5">
+                {POPULAR_PRESETS.map((p) => {
+                  const isSelected = destination === p.name && days === p.days;
+                  return (
+                    <button
+                      key={p.name}
+                      type="button"
+                      onClick={() => applyPreset(p)}
+                      className={`text-xs px-2.5 py-1 rounded-lg border font-medium transition-all ${
+                        isSelected
+                          ? 'bg-red-600 text-white border-red-600 shadow-xs'
+                          : 'bg-white dark:bg-stone-900 text-stone-700 dark:text-stone-300 border-stone-200 dark:border-stone-800 hover:border-red-400'
+                      }`}
+                    >
+                      {p.name} <span className="tabular-nums text-[10px] opacity-75">({p.days}D)</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
             {/* Destination Input */}
-            <label className="space-y-1.5">
+            <label className="space-y-1.5 block">
               <span className="text-xs font-bold text-stone-900 dark:text-stone-100">
                 Destination in India *
               </span>
@@ -568,13 +601,13 @@ export function TripPlanner() {
                   placeholder="e.g. Rajasthan, Kerala, Ladakh, Spiti Valley"
                   required
                   maxLength={200}
-                  className="pl-10 text-stone-900 dark:text-stone-100 bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-700 rounded-lg h-11 w-full"
+                  className="pl-10 text-stone-900 dark:text-stone-100 bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-700 rounded-xl h-11 w-full focus:ring-2 focus:ring-red-600/30 focus:border-red-600 outline-none transition-all"
                 />
               </div>
             </label>
 
             {/* Starting City */}
-            <label className="space-y-1.5">
+            <label className="space-y-1.5 block">
               <span className="text-xs font-bold text-stone-900 dark:text-stone-100">
                 Starting City *
               </span>
@@ -587,21 +620,21 @@ export function TripPlanner() {
                   placeholder="e.g. Delhi, Mumbai, Bengaluru, Chandigarh"
                   required
                   maxLength={200}
-                  className="pl-10 text-stone-900 dark:text-stone-100 bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-700 rounded-lg h-11 w-full"
+                  className="pl-10 text-stone-900 dark:text-stone-100 bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-700 rounded-xl h-11 w-full focus:ring-2 focus:ring-red-600/30 focus:border-red-600 outline-none transition-all"
                 />
               </div>
             </label>
 
             {/* 2-Column Grid: Duration & Travellers */}
             <div className="grid grid-cols-2 gap-3">
-              <label className="space-y-1.5">
+              <label className="space-y-1.5 block">
                 <span className="text-xs font-bold text-stone-900 dark:text-stone-100">
                   Duration (Days) *
                 </span>
                 <select
                   value={days}
                   onChange={(e) => setDays(Number(e.target.value))}
-                  className="text-stone-900 dark:text-stone-100 bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-700 rounded-lg h-11 px-3 w-full font-semibold"
+                  className="text-stone-900 dark:text-stone-100 bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-700 rounded-xl h-11 px-3 w-full font-semibold tabular-nums focus:ring-2 focus:ring-red-600/30 focus:border-red-600 outline-none transition-all"
                 >
                   <option value={3}>3 Days (Weekend)</option>
                   <option value={4}>4 Days</option>
@@ -614,9 +647,25 @@ export function TripPlanner() {
                   <option value={12}>12 Days</option>
                   <option value={14}>14 Days (Grand Circuit)</option>
                 </select>
+                <div className="flex gap-1 pt-0.5">
+                  {DURATION_CHIPS.map((chip) => (
+                    <button
+                      key={chip.days}
+                      type="button"
+                      onClick={() => setDays(chip.days)}
+                      className={`text-[10px] py-0.5 px-1.5 rounded-lg border font-semibold tabular-nums transition-all ${
+                        days === chip.days
+                          ? 'bg-stone-900 text-white border-stone-900 dark:bg-white dark:text-stone-900'
+                          : 'bg-stone-50 dark:bg-stone-800/80 text-stone-600 dark:text-stone-300 border-stone-200 dark:border-stone-700 hover:border-stone-400'
+                      }`}
+                    >
+                      {chip.days}D
+                    </button>
+                  ))}
+                </div>
               </label>
 
-              <label className="space-y-1.5">
+              <label className="space-y-1.5 block">
                 <span className="text-xs font-bold text-stone-900 dark:text-stone-100">
                   Travellers *
                 </span>
@@ -628,14 +677,30 @@ export function TripPlanner() {
                   max={30}
                   value={travellers}
                   onChange={(e) => setTravellers(Number(e.target.value))}
-                  className="text-stone-900 dark:text-stone-100 bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-700 rounded-lg h-11 px-3 w-full font-semibold"
+                  className="text-stone-900 dark:text-stone-100 bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-700 rounded-xl h-11 px-3 w-full font-semibold tabular-nums focus:ring-2 focus:ring-red-600/30 focus:border-red-600 outline-none transition-all"
                 />
+                <div className="flex gap-1 pt-0.5">
+                  {[1, 2, 4, 6].map((count) => (
+                    <button
+                      key={count}
+                      type="button"
+                      onClick={() => setTravellers(count)}
+                      className={`text-[10px] py-0.5 px-1.5 rounded-lg border font-semibold tabular-nums transition-all ${
+                        travellers === count
+                          ? 'bg-stone-900 text-white border-stone-900 dark:bg-white dark:text-stone-900'
+                          : 'bg-stone-50 dark:bg-stone-800/80 text-stone-600 dark:text-stone-300 border-stone-200 dark:border-stone-700 hover:border-stone-400'
+                      }`}
+                    >
+                      {count}
+                    </button>
+                  ))}
+                </div>
               </label>
             </div>
 
             {/* 2-Column Grid: Budget & Pace */}
             <div className="grid grid-cols-2 gap-3">
-              <label className="space-y-1.5">
+              <label className="space-y-1.5 block">
                 <span className="text-xs font-bold text-stone-900 dark:text-stone-100">
                   Total Budget (₹) *
                 </span>
@@ -648,18 +713,34 @@ export function TripPlanner() {
                   value={budget}
                   onChange={(e) => setBudget(Number(e.target.value))}
                   required
-                  className="text-stone-900 dark:text-stone-100 bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-700 rounded-lg h-11 px-3 w-full font-semibold"
+                  className="text-stone-900 dark:text-stone-100 bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-700 rounded-xl h-11 px-3 w-full font-semibold tabular-nums focus:ring-2 focus:ring-red-600/30 focus:border-red-600 outline-none transition-all"
                 />
+                <div className="flex gap-1 pt-0.5 flex-wrap">
+                  {BUDGET_PRESETS.slice(0, 4).map((bp) => (
+                    <button
+                      key={bp.amount}
+                      type="button"
+                      onClick={() => setBudget(bp.amount)}
+                      className={`text-[9.5px] py-0.5 px-1.5 rounded-lg border font-semibold tabular-nums transition-all ${
+                        budget === bp.amount
+                          ? 'bg-stone-900 text-white border-stone-900 dark:bg-white dark:text-stone-900'
+                          : 'bg-stone-50 dark:bg-stone-800/80 text-stone-600 dark:text-stone-300 border-stone-200 dark:border-stone-700 hover:border-stone-400'
+                      }`}
+                    >
+                      {bp.label}
+                    </button>
+                  ))}
+                </div>
               </label>
 
-              <label className="space-y-1.5">
+              <label className="space-y-1.5 block">
                 <span className="text-xs font-bold text-stone-900 dark:text-stone-100">
                   Travel Pace
                 </span>
                 <select
                   value={pace}
                   onChange={(e) => setPace(e.target.value)}
-                  className="text-stone-900 dark:text-stone-100 bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-700 rounded-lg h-11 px-3 w-full font-semibold"
+                  className="text-stone-900 dark:text-stone-100 bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-700 rounded-xl h-11 px-3 w-full font-semibold focus:ring-2 focus:ring-red-600/30 focus:border-red-600 outline-none transition-all"
                 >
                   <option value="Balanced">Balanced (4–6 hrs/day)</option>
                   <option value="Slow & relaxed">Leisurely (2–4 hrs/day)</option>
@@ -669,14 +750,14 @@ export function TripPlanner() {
             </div>
 
             {/* Stay Preference */}
-            <label className="space-y-1.5">
+            <label className="space-y-1.5 block">
               <span className="text-xs font-bold text-stone-900 dark:text-stone-100">
                 Accommodation Preference
               </span>
               <select
                 value={stay}
                 onChange={(e) => setStay(e.target.value)}
-                className="text-stone-900 dark:text-stone-100 bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-700 rounded-lg h-11 px-3 w-full font-semibold"
+                className="text-stone-900 dark:text-stone-100 bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-700 rounded-xl h-11 px-3 w-full font-semibold focus:ring-2 focus:ring-red-600/30 focus:border-red-600 outline-none transition-all"
               >
                 <option value="Comfort / mid-range">Comfort / Mid-Range (Verified 3–4★)</option>
                 <option value="Homestays">Homestays (Authentic Regional Stays)</option>
@@ -686,7 +767,7 @@ export function TripPlanner() {
             </label>
 
             {/* Notes / Special Requests */}
-            <label className="space-y-1.5">
+            <label className="space-y-1.5 block">
               <span className="text-xs font-bold text-stone-900 dark:text-stone-100">
                 Notes &amp; Interests (Optional)
               </span>
@@ -697,13 +778,25 @@ export function TripPlanner() {
                 maxLength={1000}
                 rows={2}
                 placeholder="e.g. Scenic mountain passes, traveling with kids, authentic local food..."
-                className="text-stone-900 dark:text-stone-100 bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-700 rounded-lg p-3 w-full text-xs"
+                className="text-stone-900 dark:text-stone-100 bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-700 rounded-xl p-3 w-full text-xs focus:ring-2 focus:ring-red-600/30 focus:border-red-600 outline-none transition-all"
               />
+              <div className="flex flex-wrap gap-1 pt-1">
+                {INTEREST_SUGGESTIONS.slice(0, 4).map((tag) => (
+                  <button
+                    key={tag}
+                    type="button"
+                    onClick={() => addInterestTag(tag)}
+                    className="text-[10px] px-2 py-0.5 rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/60 text-stone-600 dark:text-stone-300 hover:border-red-400 transition-colors"
+                  >
+                    + {tag}
+                  </button>
+                ))}
+              </div>
             </label>
 
             {/* Submit Action Button */}
             <button
-              className="button full-width mt-2 font-bold flex items-center justify-center gap-2 h-12 text-sm shadow-md"
+              className="button full-width mt-2 font-bold flex items-center justify-center gap-2 h-12 text-sm rounded-xl shadow-sm transition-all"
               disabled={busy || historyLoading || (REQUIRE_LOGIN && (!auth.isAuthed || !auth.user?.verified))}
             >
               {busy ? (
@@ -719,7 +812,7 @@ export function TripPlanner() {
               )}
             </button>
 
-            <small>AI estimates driving times &amp; route logistics using real Indian highway terrain data.</small>
+            <small className="text-pretty">AI estimates driving times &amp; route logistics using real Indian highway terrain data.</small>
           </form>
         </div>
 
@@ -737,28 +830,38 @@ export function TripPlanner() {
           {/* MINIMAL CALM LOADER - NO LIVE TEXT STREAMING */}
           {busy && (
             <div className="w-full flex flex-col items-center justify-center min-h-[460px] p-8 text-center bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-800 shadow-sm transition-all my-2">
-              <div className="relative flex items-center justify-center w-16 h-16 mb-5">
-                <div className="w-16 h-16 rounded-full border-3 border-stone-200 dark:border-stone-800 border-t-red-600 dark:border-t-red-500 animate-spin" />
-                <Sparkles size={22} className="absolute text-red-600 dark:text-red-400 animate-pulse" />
+              <div className="relative flex items-center justify-center size-16 mb-5">
+                <div className="size-16 rounded-full border-2 border-stone-200 dark:border-stone-800 border-t-red-600 dark:border-t-red-500 animate-spin" />
+                <Sparkles size={22} className="absolute text-red-600 dark:text-red-400" />
               </div>
 
-              <h3 className="text-xl md:text-2xl font-bold text-stone-900 dark:text-stone-100 mb-2 tracking-tight">
+              <h3 className="text-xl md:text-2xl font-bold text-stone-900 dark:text-stone-100 mb-2 tracking-tight text-balance">
                 We are working on your itinerary...
               </h3>
-              <p className="text-sm text-stone-600 dark:text-stone-300 max-w-md mx-auto leading-relaxed mb-6">
-                Planning your {days}-day road trip from <strong>{departure || 'your starting city'}</strong> to <strong>{destination || 'India'}</strong>. Designing daily legs, certified chauffeur allocations, and budget breakdowns.
+
+              {/* Multi-stage progressive loader cue */}
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-stone-100 dark:bg-stone-800 text-xs font-semibold text-stone-700 dark:text-stone-300 mb-4">
+                <span className="size-2 rounded-full bg-red-600 animate-pulse" />
+                <span>{LOADING_STAGES[loadingStage]?.title || 'Planning your journey...'}</span>
+              </div>
+
+              <p className="text-sm text-stone-600 dark:text-stone-300 max-w-md mx-auto leading-relaxed mb-6 text-pretty">
+                Planning your <span className="tabular-nums font-semibold">{days}</span>-day road trip from <strong>{departure || 'your starting city'}</strong> to <strong>{destination || 'India'}</strong>. Designing daily legs, certified chauffeur allocations, and budget breakdowns.
               </p>
 
               <div className="w-full max-w-xs h-1.5 bg-stone-100 dark:bg-stone-800 rounded-full overflow-hidden mb-3">
-                <div className="h-full bg-gradient-to-r from-red-600 to-amber-500 rounded-full animate-pulse" style={{ width: '70%' }} />
+                <div
+                  className="h-full bg-red-600 rounded-full transition-all duration-300 ease-out"
+                  style={{ width: `${Math.min(100, Math.max(15, (loadingStage + 1) * 20))}%` }}
+                />
               </div>
 
-              <span className="text-xs text-stone-600 dark:text-stone-300">
+              <span className="text-xs text-stone-600 dark:text-stone-300 text-pretty">
                 Your complete PDF dossier will display here automatically once ready.
               </span>
 
               <div className="mt-6 flex items-center gap-4">
-                <span className="text-xs font-mono text-stone-600 dark:text-stone-300">
+                <span className="text-xs font-mono tabular-nums text-stone-600 dark:text-stone-300">
                   {elapsedSeconds}s elapsed
                 </span>
                 <button
@@ -774,19 +877,19 @@ export function TripPlanner() {
 
           {/* EMPTY STATE */}
           {!busy && historyLoading ? (
-            <div className="output-empty">
+            <div className="output-empty rounded-xl">
               <Route size={36} className="animate-spin text-stone-400" />
-              <p>Loading your previous journey…</p>
+              <p className="text-pretty">Loading your previous journey…</p>
             </div>
           ) : !busy && !text ? (
-            <div className="output-empty p-8 text-center flex flex-col items-center justify-center min-h-[460px]">
-              <div className="w-14 h-14 rounded-full bg-stone-100 dark:bg-stone-800 flex items-center justify-center text-stone-500 mb-4">
+            <div className="output-empty p-8 text-center flex flex-col items-center justify-center min-h-[460px] rounded-xl">
+              <div className="size-14 rounded-full bg-stone-100 dark:bg-stone-800 flex items-center justify-center text-stone-500 mb-4">
                 <Route size={28} />
               </div>
-              <h3 className="text-xl font-bold text-stone-900 dark:text-stone-100 mb-2">
+              <h3 className="text-xl font-bold text-stone-900 dark:text-stone-100 mb-2 text-balance">
                 Your PDF itinerary will appear here
               </h3>
-              <p className="text-sm text-stone-600 dark:text-stone-300 max-w-md mx-auto leading-relaxed">
+              <p className="text-sm text-stone-600 dark:text-stone-300 max-w-md mx-auto leading-relaxed text-pretty">
                 Fill in your destination and route preferences on the left, then click <strong>Generate Itinerary</strong>. Your official Collabcar dossier will be generated and displayed directly as a downloadable PDF format.
               </p>
             </div>
@@ -820,19 +923,19 @@ export function TripPlanner() {
 
       {/* Saved Drafts Notebook for logged in users */}
       {auth.isAuthed && (
-        <div className="saved-drafts">
+        <div className="saved-drafts rounded-xl">
           <span className="eyebrow">YOUR TRAVEL NOTEBOOK</span>
-          <h2>Saved journeys</h2>
+          <h2 className="text-balance">Saved journeys</h2>
           {drafts.isLoading ? (
-            <p>Loading saved journeys…</p>
+            <p className="text-pretty">Loading saved journeys…</p>
           ) : drafts.records.length === 0 ? (
-            <p>No saved trips yet. Generate an itinerary above and click &quot;Save&quot; to keep it here.</p>
+            <p className="text-pretty">No saved trips yet. Generate an itinerary above and click &quot;Save&quot; to keep it here.</p>
           ) : (
             drafts.records.map((d) => (
-              <div className="saved-row" key={d.id}>
+              <div className="saved-row rounded-xl" key={d.id}>
                 <div>
-                  <strong>{d.title}</strong>
-                  <span>Private to your account</span>
+                  <strong className="text-balance">{d.title}</strong>
+                  <span className="text-pretty">Private to your account</span>
                 </div>
                 <button
                   type="button"

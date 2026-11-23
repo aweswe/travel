@@ -249,7 +249,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
         .pdf-reader-container {
           position: relative;
           width: 100%;
-          min-height: 100vh;
+          min-height: 100dvh;
           background: #f1f5f9;
           color: #0f172a;
           display: flex;
@@ -272,7 +272,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
           backdrop-filter: blur(12px);
           -webkit-backdrop-filter: blur(12px);
           border-bottom: 1px solid #e2e8f0;
-          padding: 10px 20px;
+          padding: max(10px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) 10px max(20px, env(safe-area-inset-left));
           display: flex;
           align-items: center;
           justify-content: space-between;
@@ -300,7 +300,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
           padding: 4px 10px;
           background: #0f172a;
           color: #ffffff;
-          border-radius: 9999px;
+          border-radius: var(--radius-sm, 8px);
           font-size: 11px;
           font-weight: 700;
           letter-spacing: 0.04em;
@@ -340,7 +340,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
           align-items: center;
           background: #f1f5f9;
           border: 1px solid #cbd5e1;
-          border-radius: 8px;
+          border-radius: var(--radius-sm, 8px);
           padding: 2px;
         }
 
@@ -357,7 +357,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
           height: 28px;
           background: transparent;
           border: none;
-          border-radius: 6px;
+          border-radius: calc(var(--radius-sm, 8px) - 2px);
           color: #475569;
           cursor: pointer;
           transition: all 0.15s ease;
@@ -419,7 +419,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
           padding: 6px 12px;
           background: #ffffff;
           border: 1px solid #cbd5e1;
-          border-radius: 8px;
+          border-radius: var(--radius-sm, 8px);
           font-size: 12px;
           font-weight: 600;
           color: #334155;
@@ -449,21 +449,21 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
           align-items: center;
           gap: 8px;
           padding: 7px 16px;
-          background: linear-gradient(135deg, #d73e24 0%, #b91c1c 100%);
+          background: #d73e24;
           color: #ffffff;
           border: none;
-          border-radius: 8px;
+          border-radius: var(--radius-sm, 8px);
           font-size: 12px;
           font-weight: 700;
           letter-spacing: 0.02em;
           cursor: pointer;
-          box-shadow: 0 4px 14px rgba(215, 62, 36, 0.35);
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
           transition: all 0.2s ease;
         }
 
         .pdf-action-primary:hover {
-          background: linear-gradient(135deg, #e0482e 0%, #991b1b 100%);
-          box-shadow: 0 6px 18px rgba(215, 62, 36, 0.45);
+          background: #bd341d;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
           transform: translateY(-1px);
         }
 
@@ -471,7 +471,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
           font-size: 10px;
           padding: 1px 5px;
           background: rgba(0, 0, 0, 0.25);
-          border-radius: 4px;
+          border-radius: calc(var(--radius-sm, 8px) - 4px);
           font-family: inherit;
         }
 
@@ -504,7 +504,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
           padding: 4px 10px;
           background: transparent;
           border: 1px solid transparent;
-          border-radius: 9999px;
+          border-radius: var(--radius-sm, 8px);
           font-size: 11px;
           font-weight: 600;
           color: #64748b;
@@ -551,7 +551,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
           max-width: 100%;
           background: #ffffff;
           color: #0f172a;
-          border-radius: 8px;
+          border-radius: var(--radius, 12px);
           border: 1px solid #cbd5e1;
           box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.05);
           padding: 48px 54px;
@@ -573,7 +573,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
           min-height: 1160px; /* A4 aspect ratio representation */
           background: #ffffff;
           color: #0f172a;
-          border-radius: 8px;
+          border-radius: var(--radius, 12px);
           border: 1px solid #cbd5e1;
           box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
           padding: 48px 54px;
@@ -676,7 +676,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
           align-items: center;
           gap: 6px;
           padding: 5px 12px;
-          border-radius: 9999px;
+          border-radius: var(--radius-sm, 8px);
           font-size: 11px;
           font-weight: 800;
           letter-spacing: 0.02em;
@@ -688,6 +688,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
           font-weight: 700;
           color: #64748b;
           font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+          font-variant-numeric: tabular-nums;
         }
 
         .pdf-accreditation-pill {
@@ -700,7 +701,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
           background: #dcfce7;
           border: 1px solid #bbf7d0;
           padding: 2px 8px;
-          border-radius: 4px;
+          border-radius: var(--radius-sm, 8px);
           letter-spacing: 0.03em;
         }
 
@@ -725,7 +726,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
           background: #f8fafc;
           border: 1px solid #e2e8f0;
           padding: 6px 14px;
-          border-radius: 6px;
+          border-radius: var(--radius-sm, 8px);
           font-size: 13px;
           font-weight: 700;
           color: #334155;
@@ -739,7 +740,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
           gap: 12px;
           background: #f8fafc;
           border: 1px solid #e2e8f0;
-          border-radius: 8px;
+          border-radius: var(--radius, 12px);
           padding: 16px;
           margin-bottom: 24px;
         }
@@ -776,7 +777,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
 
         /* DESTINATION ADVISORY BANNER */
         .pdf-advisory-card {
-          border-radius: 8px;
+          border-radius: var(--radius, 12px);
           padding: 14px 18px;
           margin-bottom: 28px;
           font-size: 11.5px;
@@ -852,7 +853,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
           background: #f1f5f9;
           color: #475569;
           padding: 3px 8px;
-          border-radius: 4px;
+          border-radius: var(--radius-sm, 8px);
         }
 
         /* DAY BY DAY SCHEDULE */
@@ -864,7 +865,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
 
         .pdf-day-card {
           border: 1px solid #e2e8f0;
-          border-radius: 8px;
+          border-radius: var(--radius, 12px);
           background: #ffffff;
           overflow: hidden;
           page-break-inside: avoid;
@@ -893,8 +894,9 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
           font-size: 11px;
           font-weight: 900;
           padding: 3px 8px;
-          border-radius: 4px;
+          border-radius: calc(var(--radius-sm, 8px) - 2px);
           letter-spacing: 0.04em;
+          font-variant-numeric: tabular-nums;
         }
 
         .pdf-day-title-text {
@@ -914,7 +916,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
           background: #ffffff;
           border: 1px solid #cbd5e1;
           padding: 3px 8px;
-          border-radius: 4px;
+          border-radius: calc(var(--radius-sm, 8px) - 2px);
           white-space: nowrap;
         }
 
@@ -933,7 +935,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
         .pdf-slot-card {
           background: #f8fafc;
           border: 1px solid #e2e8f0;
-          border-radius: 6px;
+          border-radius: var(--radius-sm, 8px);
           padding: 10px 12px;
           display: flex;
           flex-direction: column;
@@ -952,7 +954,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
 
         .pdf-slot-header.morning { color: #d97706; }
         .pdf-slot-header.afternoon { color: #2563eb; }
-        .pdf-slot-header.evening { color: #7c3aed; }
+        .pdf-slot-header.evening { color: #c2410c; }
 
         .pdf-slot-desc {
           font-size: 11.5px;
@@ -965,7 +967,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
         .pdf-stay-card {
           background: #f0fdf4;
           border: 1px solid #bbf7d0;
-          border-radius: 6px;
+          border-radius: var(--radius-sm, 8px);
           padding: 8px 12px;
           display: flex;
           align-items: center;
@@ -990,7 +992,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
         /* HIGH RESOLUTION BUDGET TABLE */
         .pdf-budget-table-wrapper {
           border: 1px solid #e2e8f0;
-          border-radius: 8px;
+          border-radius: var(--radius, 12px);
           overflow: hidden;
           margin-bottom: 20px;
           page-break-inside: avoid;
@@ -1029,6 +1031,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
           color: #0f172a;
           font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
           white-space: nowrap;
+          font-variant-numeric: tabular-nums;
         }
 
         .pdf-budget-total-row td {
@@ -1057,7 +1060,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
         .pdf-incl-box {
           background: #f8fafc;
           border: 1px solid #e2e8f0;
-          border-radius: 6px;
+          border-radius: var(--radius-sm, 8px);
           padding: 12px 14px;
         }
 
@@ -1096,7 +1099,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
         .pdf-tip-card {
           background: #f8fafc;
           border: 1px solid #e2e8f0;
-          border-radius: 8px;
+          border-radius: var(--radius, 12px);
           padding: 12px 14px;
           display: flex;
           gap: 12px;
@@ -1111,8 +1114,9 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
           font-size: 10px;
           font-weight: 900;
           padding: 3px 7px;
-          border-radius: 4px;
+          border-radius: calc(var(--radius-sm, 8px) - 2px);
           flex-shrink: 0;
+          font-variant-numeric: tabular-nums;
         }
 
         .pdf-tip-text {
@@ -1180,7 +1184,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
           background: #f8fafc;
           border: 1px dashed #cbd5e1;
           padding: 6px 12px;
-          border-radius: 6px;
+          border-radius: var(--radius-sm, 8px);
           font-size: 10px;
           font-weight: 800;
           color: #0f172a;
@@ -1198,6 +1202,10 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
           .pdf-reader-toolbar {
             padding: 8px 12px;
             flex-wrap: wrap;
+            gap: 10px;
+          }
+          .pdf-toolbar-left {
+            max-width: 100%;
           }
           .pdf-dossier-paper {
             padding: 24px 20px;
@@ -1220,6 +1228,17 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
           .pdf-signature-block {
             align-items: flex-start;
             text-align: left;
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .pdf-ctrl-btn,
+          .pdf-action-secondary,
+          .pdf-action-primary,
+          .pdf-nav-chip,
+          .pdf-reader-canvas,
+          .pdf-dossier-paper {
+            transition: none !important;
           }
         }
 
@@ -1355,13 +1374,23 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
               onClick={handleZoomOut}
               disabled={zoom <= 0.7}
               title="Zoom Out (Ctrl -)"
+              aria-label="Zoom out"
             >
               <ZoomOut size={14} />
             </button>
             <span
               className="pdf-zoom-badge"
+              role="button"
+              tabIndex={0}
               onClick={handleZoomReset}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleZoomReset();
+                }
+              }}
               title="Click to reset zoom to 100%"
+              aria-label="Reset zoom to 100%"
             >
               {Math.round(zoom * 100)}%
             </span>
@@ -1371,6 +1400,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
               onClick={handleZoomIn}
               disabled={zoom >= 1.4}
               title="Zoom In (Ctrl +)"
+              aria-label="Zoom in"
             >
               <ZoomIn size={14} />
             </button>
@@ -1379,6 +1409,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
               className="pdf-ctrl-btn"
               onClick={handleFitWidth}
               title="Fit to Width"
+              aria-label="Fit document to width"
             >
               <Maximize2 size={13} />
             </button>
@@ -1391,6 +1422,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
               className={`pdf-ctrl-btn ${viewMode === 'continuous' ? 'active' : ''}`}
               onClick={() => setViewMode('continuous')}
               title="Continuous Document Flow"
+              aria-label="Continuous document flow mode"
               style={{ width: 'auto', padding: '0 8px', fontSize: '11px' }}
             >
               Continuous
@@ -1400,6 +1432,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
               className={`pdf-ctrl-btn ${viewMode === 'pages' ? 'active' : ''}`}
               onClick={() => setViewMode('pages')}
               title="A4 Multi-Page Sheet Preview"
+              aria-label="A4 multi-page sheets preview mode"
               style={{ width: 'auto', padding: '0 8px', fontSize: '11px' }}
             >
               <Layers size={13} style={{ marginRight: 4 }} /> A4 Sheets
@@ -1414,9 +1447,10 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
             className="pdf-action-secondary"
             onClick={handleCopySummary}
             title="Copy text summary to clipboard"
+            aria-label="Copy dossier text summary"
           >
             {copied ? <Check size={14} className="text-emerald-600" /> : <Copy size={14} />}
-            {copied ? 'Copied' : 'Copy'}
+            <span>{copied ? 'Copied' : 'Copy'}</span>
           </button>
 
           <button
@@ -1424,6 +1458,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
             className="pdf-action-primary"
             onClick={handlePrint}
             title="Download or Print full A4 PDF Dossier (Ctrl+P / ⌘P)"
+            aria-label="Download or print full A4 PDF dossier"
           >
             <Printer size={15} />
             <span>{isPrinting ? 'Preparing PDF...' : 'Print / Save PDF'}</span>
@@ -1526,7 +1561,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
 
             {/* 2. TITLE & ROUTE SUMMARY */}
             <div className="pdf-title-zone">
-              <h2 className="pdf-dossier-headline">
+              <h2 className="pdf-dossier-headline text-balance">
                 {itinerary.title || `${destination} Travel Expedition Dossier`}
               </h2>
               <div className="pdf-route-banner">
@@ -1548,7 +1583,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
                   <Calendar size={16} className="pdf-matrix-icon" />
                   <div>
                     <span className="pdf-matrix-label">Duration</span>
-                    <strong className="pdf-matrix-value">{days} Days / {Math.max(1, days - 1)} Nights</strong>
+                    <strong className="pdf-matrix-value tabular-nums">{days} Days / {Math.max(1, days - 1)} Nights</strong>
                   </div>
                 </div>
 
@@ -1556,7 +1591,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
                   <Users size={16} className="pdf-matrix-icon" />
                   <div>
                     <span className="pdf-matrix-label">Travel Party</span>
-                    <strong className="pdf-matrix-value">{travellers} Travellers</strong>
+                    <strong className="pdf-matrix-value tabular-nums">{travellers} Travellers</strong>
                   </div>
                 </div>
 
@@ -1577,10 +1612,10 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
               <div className="pdf-advisory-card mountains">
                 <AlertTriangle size={20} className="flex-shrink-0 text-blue-600 mt-0.5" />
                 <div>
-                  <div className="pdf-advisory-title">
+                  <div className="pdf-advisory-title text-balance">
                     🏔️ High-Altitude Mountain Safety &amp; Chauffeur Protocol
                   </div>
-                  <p className="m-0">
+                  <p className="m-0 text-pretty">
                     High mountain sectors require specialized transit logistics. Collabcar provides mountain-certified
                     senior chauffeurs, compulsory 24–48h base acclimatization halts, vehicle oxygen canisters upon request,
                     and seamless union transit handoffs in protected Himalayan circuits (Leh, Spiti &amp; Nubra).
@@ -1593,10 +1628,10 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
               <div className="pdf-advisory-card heritage">
                 <ShieldCheck size={20} className="flex-shrink-0 text-amber-700 mt-0.5" />
                 <div>
-                  <div className="pdf-advisory-title">
+                  <div className="pdf-advisory-title text-balance">
                     🏰 Royal Heritage Corridor &amp; Interstate Logistics
                   </div>
-                  <p className="m-0">
+                  <p className="m-0 text-pretty">
                     Pre-cleared interstate commercial tourist road tax clearances across Delhi, Haryana, Rajasthan, and Uttar Pradesh.
                     Collabcar verified chauffeurs navigate direct monument access gates with zero unauthorized commercial shopping detours.
                   </p>
@@ -1608,10 +1643,10 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
               <div className="pdf-advisory-card coastal">
                 <Compass size={20} className="flex-shrink-0 text-teal-700 mt-0.5" />
                 <div>
-                  <div className="pdf-advisory-title">
+                  <div className="pdf-advisory-title text-balance">
                     🌴 Coastal &amp; Backwater Transit Logistics
                   </div>
-                  <p className="m-0">
+                  <p className="m-0 text-pretty">
                     All-weather coastal transit coordination with pre-cleared coastal highway routes and ferry transit assistance.
                     Vehicles are climate-controlled and monsoon-ready for optimum comfort.
                   </p>
@@ -1627,11 +1662,11 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
             {/* 4. DAY-BY-DAY EXPEDITION SCHEDULE */}
             <section className="pdf-schedule-section" id="sec-schedule">
               <div className="pdf-section-header">
-                <h3 className="pdf-section-title">
+                <h3 className="pdf-section-title text-balance">
                   <Compass size={18} className="text-red-600" />
                   Day-by-Day Expedition Schedule
                 </h3>
-                <span className="pdf-section-badge">{itinerary.days.length || days} Operational Days</span>
+                <span className="pdf-section-badge tabular-nums">{itinerary.days.length || days} Operational Days</span>
               </div>
 
               <div className="pdf-days-container">
@@ -1640,8 +1675,8 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
                     <div key={day.dayNumber} className="pdf-day-card">
                       <div className="pdf-day-card-header">
                         <div className="pdf-day-badge-wrap">
-                          <span className="pdf-day-num-tag">DAY 0{day.dayNumber}</span>
-                          <h4 className="pdf-day-title-text">{day.title}</h4>
+                          <span className="pdf-day-num-tag tabular-nums">DAY 0{day.dayNumber}</span>
+                          <h4 className="pdf-day-title-text text-balance">{day.title}</h4>
                         </div>
                         {day.transit && (
                           <div className="pdf-day-transit-badge">
@@ -1659,7 +1694,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
                               <span className="pdf-slot-header morning">
                                 <Sun size={12} /> Morning
                               </span>
-                              <p className="pdf-slot-desc">{day.morning}</p>
+                              <p className="pdf-slot-desc text-pretty">{day.morning}</p>
                             </div>
                           )}
 
@@ -1668,7 +1703,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
                               <span className="pdf-slot-header afternoon">
                                 <Sun size={12} /> Afternoon
                               </span>
-                              <p className="pdf-slot-desc">{day.afternoon}</p>
+                              <p className="pdf-slot-desc text-pretty">{day.afternoon}</p>
                             </div>
                           )}
 
@@ -1677,7 +1712,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
                               <span className="pdf-slot-header evening">
                                 <Moon size={12} /> Evening
                               </span>
-                              <p className="pdf-slot-desc">{day.evening}</p>
+                              <p className="pdf-slot-desc text-pretty">{day.evening}</p>
                             </div>
                           )}
                         </div>
@@ -1686,7 +1721,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
                         {day.stay && (
                           <div className="pdf-stay-card">
                             <Hotel size={14} className="flex-shrink-0" />
-                            <span>
+                            <span className="text-pretty">
                               <strong>Recommended Stay:</strong> {day.stay} · <em>Chauffeur lodging fully covered by Collabcar</em>
                             </span>
                           </div>
@@ -1696,7 +1731,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
                         {day.otherBullets && day.otherBullets.length > 0 && (
                           <ul className="pdf-bullets-list">
                             {day.otherBullets.map((bullet, idx) => (
-                              <li key={idx}>{bullet}</li>
+                              <li key={idx} className="text-pretty">{bullet}</li>
                             ))}
                           </ul>
                         )}
@@ -1719,11 +1754,11 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
             {/* 5. HIGH RESOLUTION COST & INCLUSIONS BREAKDOWN */}
             <section className="pdf-budget-section" id="sec-budget">
               <div className="pdf-section-header">
-                <h3 className="pdf-section-title">
+                <h3 className="pdf-section-title text-balance">
                   <Receipt size={18} className="text-red-600" />
                   Estimated Cost &amp; Commercial Coverage Breakdown
                 </h3>
-                <span className="pdf-section-badge">All Figures in INR (₹)</span>
+                <span className="pdf-section-badge tabular-nums">All Figures in INR (₹)</span>
               </div>
 
               <div className="pdf-budget-table-wrapper">
@@ -1745,8 +1780,8 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
                           <td>
                             <strong>{item.category}</strong>
                           </td>
-                          <td className="pdf-cost-cell">{item.cost}</td>
-                          <td>{item.details}</td>
+                          <td className="pdf-cost-cell tabular-nums">{item.cost}</td>
+                          <td className="text-pretty">{item.details}</td>
                         </tr>
                       );
                     })}
@@ -1757,7 +1792,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
               {/* Inclusions / Exclusions Highlights */}
               <div className="pdf-inclusions-grid">
                 <div className="pdf-incl-box yes">
-                  <h4>
+                  <h4 className="text-balance">
                     <CheckCircle2 size={14} /> Collabcar Package Inclusions
                   </h4>
                   <ul className="pdf-incl-list">
@@ -1771,7 +1806,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
                 </div>
 
                 <div className="pdf-incl-box no">
-                  <h4>
+                  <h4 className="text-balance">
                     <AlertTriangle size={14} /> Passenger Direct Expenses
                   </h4>
                   <ul className="pdf-incl-list">
@@ -1788,7 +1823,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
             {itinerary.tips.length > 0 && (
               <section className="pdf-tips-section" id="sec-chauffeur">
                 <div className="pdf-section-header">
-                  <h3 className="pdf-section-title">
+                  <h3 className="pdf-section-title text-balance">
                     <Car size={18} className="text-red-600" />
                     Collabcar Chauffeur Advice &amp; On-Road Realities
                   </h3>
@@ -1798,8 +1833,8 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
                 <div className="pdf-tips-grid">
                   {itinerary.tips.map((tip, idx) => (
                     <div key={idx} className="pdf-tip-card">
-                      <span className="pdf-tip-index">0{idx + 1}</span>
-                      <p className="pdf-tip-text">{tip}</p>
+                      <span className="pdf-tip-index tabular-nums">0{idx + 1}</span>
+                      <p className="pdf-tip-text text-pretty">{tip}</p>
                     </div>
                   ))}
                 </div>
@@ -1809,16 +1844,16 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
             {/* 7. OFFICIAL ASSURANCE & SIGNATURE FOOTER */}
             <footer className="pdf-official-footer" id="sec-assurance">
               <div className="pdf-footer-assurance">
-                <div className="pdf-assurance-title">
+                <div className="pdf-assurance-title text-balance">
                   <ShieldCheck size={18} className="text-red-600" />
                   <span>The Collabcar Assurance Guarantee</span>
                 </div>
-                <p className="pdf-assurance-desc">
+                <p className="pdf-assurance-desc text-pretty">
                   This document serves as an official Collabcar Travel Dossier. All journeys are executed exclusively
                   with 100% verified All India Tourist Permit (AITP) commercial fleets, commercial passenger insurance,
                   and verified professional chauffeurs.
                 </p>
-                <div className="pdf-contact-bar">
+                <div className="pdf-contact-bar tabular-nums flex-wrap">
                   <span className="flex items-center gap-1.5">
                     <PhoneCall size={12} className="text-red-600" />
                     24/7 Operations Desk: care@collabcar.com
@@ -1879,13 +1914,13 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
                     >
                       {activeTheme.icon} {activeTheme.tag}
                     </span>
-                    <span className="pdf-meta-line">Ref: {dossierId}</span>
+                    <span className="pdf-meta-line tabular-nums">Ref: {dossierId}</span>
                   </div>
                 </header>
 
                 {/* Title & Route */}
                 <div className="pdf-title-zone">
-                  <h2 className="pdf-dossier-headline">
+                  <h2 className="pdf-dossier-headline text-balance">
                     {itinerary.title || `${destination} Travel Expedition Dossier`}
                   </h2>
                   <div className="pdf-route-banner">
@@ -1907,7 +1942,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
                       <Calendar size={16} className="pdf-matrix-icon" />
                       <div>
                         <span className="pdf-matrix-label">Duration</span>
-                        <strong className="pdf-matrix-value">{days} Days / {Math.max(1, days - 1)} Nights</strong>
+                        <strong className="pdf-matrix-value tabular-nums">{days} Days / {Math.max(1, days - 1)} Nights</strong>
                       </div>
                     </div>
 
@@ -1915,7 +1950,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
                       <Users size={16} className="pdf-matrix-icon" />
                       <div>
                         <span className="pdf-matrix-label">Travel Party</span>
-                        <strong className="pdf-matrix-value">{travellers} Travellers</strong>
+                        <strong className="pdf-matrix-value tabular-nums">{travellers} Travellers</strong>
                       </div>
                     </div>
 
@@ -1936,10 +1971,10 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
                   <div className="pdf-advisory-card mountains">
                     <AlertTriangle size={20} className="flex-shrink-0 text-blue-600 mt-0.5" />
                     <div>
-                      <div className="pdf-advisory-title">
+                      <div className="pdf-advisory-title text-balance">
                         🏔️ High-Altitude Mountain Safety &amp; Chauffeur Protocol
                       </div>
-                      <p className="m-0">
+                      <p className="m-0 text-pretty">
                         High mountain sectors require specialized transit logistics. Collabcar provides mountain-certified
                         senior chauffeurs, compulsory 24–48h base acclimatization halts, vehicle oxygen canisters upon request,
                         and seamless union transit handoffs in protected Himalayan circuits (Leh, Spiti &amp; Nubra).
@@ -1952,10 +1987,10 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
                   <div className="pdf-advisory-card heritage">
                     <ShieldCheck size={20} className="flex-shrink-0 text-amber-700 mt-0.5" />
                     <div>
-                      <div className="pdf-advisory-title">
+                      <div className="pdf-advisory-title text-balance">
                         🏰 Royal Heritage Corridor &amp; Interstate Logistics
                       </div>
-                      <p className="m-0">
+                      <p className="m-0 text-pretty">
                         Pre-cleared interstate commercial tourist road tax clearances across Delhi, Haryana, Rajasthan, and UP.
                         Collabcar verified chauffeurs navigate direct monument access gates with zero unauthorized commercial shopping detours.
                       </p>
@@ -1967,17 +2002,17 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
                 {itinerary.days.length > 0 && (
                   <div className="mt-6">
                     <div className="pdf-section-header">
-                      <h3 className="pdf-section-title">
+                      <h3 className="pdf-section-title text-balance">
                         <Compass size={18} className="text-red-600" />
                         Expedition Commencement
                       </h3>
-                      <span className="pdf-section-badge">Day 01 Highlights</span>
+                      <span className="pdf-section-badge tabular-nums">Day 01 Highlights</span>
                     </div>
                     <div className="pdf-day-card">
                       <div className="pdf-day-card-header">
                         <div className="pdf-day-badge-wrap">
-                          <span className="pdf-day-num-tag">DAY 01</span>
-                          <h4 className="pdf-day-title-text">{itinerary.days[0].title}</h4>
+                          <span className="pdf-day-num-tag tabular-nums">DAY 01</span>
+                          <h4 className="pdf-day-title-text text-balance">{itinerary.days[0].title}</h4>
                         </div>
                         {itinerary.days[0].transit && (
                           <div className="pdf-day-transit-badge">
@@ -1991,26 +2026,26 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
                           {itinerary.days[0].morning && (
                             <div className="pdf-slot-card">
                               <span className="pdf-slot-header morning"><Sun size={12} /> Morning</span>
-                              <p className="pdf-slot-desc">{itinerary.days[0].morning}</p>
+                              <p className="pdf-slot-desc text-pretty">{itinerary.days[0].morning}</p>
                             </div>
                           )}
                           {itinerary.days[0].afternoon && (
                             <div className="pdf-slot-card">
                               <span className="pdf-slot-header afternoon"><Sun size={12} /> Afternoon</span>
-                              <p className="pdf-slot-desc">{itinerary.days[0].afternoon}</p>
+                              <p className="pdf-slot-desc text-pretty">{itinerary.days[0].afternoon}</p>
                             </div>
                           )}
                           {itinerary.days[0].evening && (
                             <div className="pdf-slot-card">
                               <span className="pdf-slot-header evening"><Moon size={12} /> Evening</span>
-                              <p className="pdf-slot-desc">{itinerary.days[0].evening}</p>
+                              <p className="pdf-slot-desc text-pretty">{itinerary.days[0].evening}</p>
                             </div>
                           )}
                         </div>
                         {itinerary.days[0].stay && (
                           <div className="pdf-stay-card">
                             <Hotel size={14} className="flex-shrink-0" />
-                            <span><strong>Recommended Stay:</strong> {itinerary.days[0].stay}</span>
+                            <span className="text-pretty"><strong>Recommended Stay:</strong> {itinerary.days[0].stay}</span>
                           </div>
                         )}
                       </div>
@@ -2020,7 +2055,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
               </div>
 
               {/* Sheet 1 Footer */}
-              <div className="pdf-sheet-footer-page-num">
+              <div className="pdf-sheet-footer-page-num tabular-nums">
                 <span>Collabcar Travel Dossier · {dossierId}</span>
                 <span>Page 1 of {itinerary.days.length > 1 ? 3 : 2}</span>
               </div>
@@ -2042,7 +2077,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
                       </div>
                     </div>
                     <div className="pdf-masthead-meta">
-                      <span className="pdf-meta-line">Ref: {dossierId}</span>
+                      <span className="pdf-meta-line tabular-nums">Ref: {dossierId}</span>
                     </div>
                   </header>
 
@@ -2051,8 +2086,8 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
                       <div key={day.dayNumber} className="pdf-day-card">
                         <div className="pdf-day-card-header">
                           <div className="pdf-day-badge-wrap">
-                            <span className="pdf-day-num-tag">DAY 0{day.dayNumber}</span>
-                            <h4 className="pdf-day-title-text">{day.title}</h4>
+                            <span className="pdf-day-num-tag tabular-nums">DAY 0{day.dayNumber}</span>
+                            <h4 className="pdf-day-title-text text-balance">{day.title}</h4>
                           </div>
                           {day.transit && (
                             <div className="pdf-day-transit-badge">
@@ -2067,26 +2102,26 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
                             {day.morning && (
                               <div className="pdf-slot-card">
                                 <span className="pdf-slot-header morning"><Sun size={12} /> Morning</span>
-                                <p className="pdf-slot-desc">{day.morning}</p>
+                                <p className="pdf-slot-desc text-pretty">{day.morning}</p>
                               </div>
                             )}
                             {day.afternoon && (
                               <div className="pdf-slot-card">
                                 <span className="pdf-slot-header afternoon"><Sun size={12} /> Afternoon</span>
-                                <p className="pdf-slot-desc">{day.afternoon}</p>
+                                <p className="pdf-slot-desc text-pretty">{day.afternoon}</p>
                               </div>
                             )}
                             {day.evening && (
                               <div className="pdf-slot-card">
                                 <span className="pdf-slot-header evening"><Moon size={12} /> Evening</span>
-                                <p className="pdf-slot-desc">{day.evening}</p>
+                                <p className="pdf-slot-desc text-pretty">{day.evening}</p>
                               </div>
                             )}
                           </div>
                           {day.stay && (
                             <div className="pdf-stay-card">
                               <Hotel size={14} className="flex-shrink-0" />
-                              <span><strong>Recommended Stay:</strong> {day.stay}</span>
+                              <span className="text-pretty"><strong>Recommended Stay:</strong> {day.stay}</span>
                             </div>
                           )}
                         </div>
@@ -2096,7 +2131,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
                 </div>
 
                 {/* Sheet 2 Footer */}
-                <div className="pdf-sheet-footer-page-num">
+                <div className="pdf-sheet-footer-page-num tabular-nums">
                   <span>Collabcar Travel Dossier · {dossierId}</span>
                   <span>Page 2 of 3</span>
                 </div>
@@ -2118,7 +2153,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
                     </div>
                   </div>
                   <div className="pdf-masthead-meta">
-                    <span className="pdf-meta-line">Ref: {dossierId}</span>
+                    <span className="pdf-meta-line tabular-nums">Ref: {dossierId}</span>
                   </div>
                 </header>
 
@@ -2140,8 +2175,8 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
                         return (
                           <tr key={idx} className={isTotal ? 'pdf-budget-total-row' : ''}>
                             <td><strong>{item.category}</strong></td>
-                            <td className="pdf-cost-cell">{item.cost}</td>
-                            <td>{item.details}</td>
+                            <td className="pdf-cost-cell tabular-nums">{item.cost}</td>
+                            <td className="text-pretty">{item.details}</td>
                           </tr>
                         );
                       })}
@@ -2152,7 +2187,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
                 {/* Inclusions */}
                 <div className="pdf-inclusions-grid" style={{ marginBottom: 20 }}>
                   <div className="pdf-incl-box yes">
-                    <h4><CheckCircle2 size={14} /> Collabcar Package Inclusions</h4>
+                    <h4 className="text-balance"><CheckCircle2 size={14} /> Collabcar Package Inclusions</h4>
                     <ul className="pdf-incl-list">
                       <li>Dedicated AC commercial vehicle with verified chauffeur</li>
                       <li>All interstate passenger road tax clearances (AITP pan-India)</li>
@@ -2163,7 +2198,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
                   </div>
 
                   <div className="pdf-incl-box no">
-                    <h4><AlertTriangle size={14} /> Passenger Direct Expenses</h4>
+                    <h4 className="text-balance"><AlertTriangle size={14} /> Passenger Direct Expenses</h4>
                     <ul className="pdf-incl-list">
                       <li>Heritage monument entry tickets &amp; safari permits</li>
                       <li>Personal meals, refreshments, and hotel accommodation</li>
@@ -2176,7 +2211,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
                 {itinerary.tips.length > 0 && (
                   <div style={{ marginBottom: 24 }}>
                     <div className="pdf-section-header" style={{ margin: '16px 0 12px 0' }}>
-                      <h3 className="pdf-section-title" style={{ fontSize: 13 }}>
+                      <h3 className="pdf-section-title text-balance" style={{ fontSize: 13 }}>
                         <Car size={15} className="text-red-600" />
                         Chauffeur Road Intelligence
                       </h3>
@@ -2184,8 +2219,8 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
                     <div className="pdf-tips-grid">
                       {itinerary.tips.slice(0, 4).map((tip, idx) => (
                         <div key={idx} className="pdf-tip-card">
-                          <span className="pdf-tip-index">0{idx + 1}</span>
-                          <p className="pdf-tip-text">{tip}</p>
+                          <span className="pdf-tip-index tabular-nums">0{idx + 1}</span>
+                          <p className="pdf-tip-text text-pretty">{tip}</p>
                         </div>
                       ))}
                     </div>
@@ -2195,11 +2230,11 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
                 {/* Official Assurance Footer */}
                 <footer className="pdf-official-footer">
                   <div className="pdf-footer-assurance">
-                    <div className="pdf-assurance-title">
+                    <div className="pdf-assurance-title text-balance">
                       <ShieldCheck size={18} className="text-red-600" />
                       <span>The Collabcar Assurance Guarantee</span>
                     </div>
-                    <p className="pdf-assurance-desc">
+                    <p className="pdf-assurance-desc text-pretty">
                       100% Commercial AITP Fleets · Zero Passenger Liability · 24/7 Operations Desk (care@collabcar.com)
                     </p>
                   </div>
@@ -2215,7 +2250,7 @@ Collabcar Assurance: 100% Commercial AITP Fleets • Zero Passenger Damage Liabi
               </div>
 
               {/* Sheet 3 Footer */}
-              <div className="pdf-sheet-footer-page-num">
+              <div className="pdf-sheet-footer-page-num tabular-nums">
                 <span>Collabcar Travel Dossier · {dossierId}</span>
                 <span>Page {itinerary.days.length > 1 ? 3 : 2} of {itinerary.days.length > 1 ? 3 : 2}</span>
               </div>

@@ -93,7 +93,7 @@ export default function RootLayout({
       </head>
       <body suppressHydrationWarning>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange={false}>
-          <div id="root" className="min-h-screen flex flex-col justify-between">
+          <div id="root" className="min-h-dvh flex flex-col justify-between">
             <SiteHeader />
             <main id="main-content" tabIndex={-1} className="flex-1">
               {children}
