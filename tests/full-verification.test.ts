@@ -118,18 +118,22 @@ describe('Full Application Verification Suite', () => {
       expect(tripPlannerTsx).toContain('Finalizing transparent budget breakdown');
     });
 
-    it('includes the animated SVG Highway Route Tracer canvas with waypoints and vehicle', () => {
-      expect(tripPlannerTsx).toContain('route-dash-animated');
-      expect(tripPlannerTsx).toContain('waypoint-ping');
-      expect(tripPlannerTsx).toContain('car-tracer-icon');
-      expect(tripPlannerTsx).toContain('AITP HIGHWAY LOGISTICS TRACER');
+    it('displays the clean, non-streaming loader with clear status messaging', () => {
+      expect(tripPlannerTsx).toContain('We are working on your itinerary...');
+      expect(tripPlannerTsx).toContain('Your complete PDF dossier will display here automatically once ready');
+      expect(tripPlannerTsx).not.toContain('Live DeepSeek Token Stream');
     });
 
-    it('includes steady streaming container with typewriter cursor and live telemetry', () => {
-      expect(tripPlannerTsx).toContain('typewriter-cursor');
-      expect(tripPlannerTsx).toContain('Live DeepSeek Token Stream');
-      expect(tripPlannerTsx).toContain('words');
-      expect(tripPlannerTsx).toContain('Cancel Stream');
+    it('provides clean and minimal builder input configuration without slop', () => {
+      expect(tripPlannerTsx).toContain('Destination in India');
+      expect(tripPlannerTsx).toContain('Starting City');
+      expect(tripPlannerTsx).toContain('Duration (Days)');
+      expect(tripPlannerTsx).toContain('Total Budget (₹)');
+    });
+
+    it('directly defaults to and displays the PDF format with download option', () => {
+      expect(itineraryViewerTsx).toContain("useState<'visual' | 'pdf' | 'editor'>('pdf')");
+      expect(itineraryViewerTsx).toContain('Download PDF');
     });
 
     it('includes enhanced builder inputs: duration chips, budget presets, pace, and stay selectors', () => {

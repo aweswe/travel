@@ -66,7 +66,8 @@ export function ItineraryViewer({
   draftId = '',
   isAuthed,
 }: ItineraryViewerProps) {
-  const [activeTab, setActiveTab] = useState<'visual' | 'pdf' | 'editor'>('visual');
+  // Directly show PDF format as primary default view
+  const [activeTab, setActiveTab] = useState<'visual' | 'pdf' | 'editor'>('pdf');
   const [copied, setCopied] = useState(false);
   const [copiedDay, setCopiedDay] = useState<number | null>(null);
   const [customRefinement, setCustomRefinement] = useState('');
@@ -228,24 +229,24 @@ export function ItineraryViewer({
         <div className="tabs-group">
           <button
             type="button"
-            className={`tab-btn ${activeTab === 'visual' ? 'active' : ''}`}
-            onClick={() => setActiveTab('visual')}
-          >
-            <Eye size={15} /> Visual Journey View
-          </button>
-          <button
-            type="button"
             className={`tab-btn ${activeTab === 'pdf' ? 'active' : ''}`}
             onClick={() => setActiveTab('pdf')}
           >
-            <Printer size={15} /> PDF Document &amp; Print
+            <Printer size={15} /> PDF Dossier
+          </button>
+          <button
+            type="button"
+            className={`tab-btn ${activeTab === 'visual' ? 'active' : ''}`}
+            onClick={() => setActiveTab('visual')}
+          >
+            <Eye size={15} /> Visual Breakdown
           </button>
           <button
             type="button"
             className={`tab-btn ${activeTab === 'editor' ? 'active' : ''}`}
             onClick={() => setActiveTab('editor')}
           >
-            <Edit3 size={15} /> Edit Text / Raw
+            <Edit3 size={15} /> Raw Notes
           </button>
         </div>
 
@@ -268,9 +269,9 @@ export function ItineraryViewer({
               setTimeout(() => window.print(), 250);
             }}
             className="action-btn primary-action"
-            title="Export official Collabcar PDF"
+            title="Download or Print official Collabcar PDF"
           >
-            <Printer size={14} /> Export PDF
+            <Printer size={14} /> Download PDF
           </button>
 
           {isAuthed && onSave && (
