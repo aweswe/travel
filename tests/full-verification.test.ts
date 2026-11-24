@@ -253,4 +253,38 @@ describe('Full Application Verification Suite', () => {
       expect(globalsCss).toContain('@media (prefers-reduced-motion: reduce)');
     });
   });
+
+  describe('6. Real-Time Route Intelligence & Search Grounding Verification', () => {
+    it('extracts structured trip parameters from configured prompt text', async () => {
+      const { extractTripParameters } = await import('@/lib/route-intelligence.server');
+      const params = extractTripParameters(
+        'Draft a new India itinerary with these preferences: destination Jaipur; departure city Delhi; start date flexible; 3 days; 2 travellers; total group budget INR 45000; travel pace Balanced; stay preference Heritage Haveli; interests and needs: scenic views, authentic food. Include a practical day-by-day route.'
+      );
+      expect(params.destination).toBe('Jaipur');
+      expect(params.departure).toBe('Delhi');
+      expect(params.days).toBe(3);
+      expect(params.travellers).toBe(2);
+      expect(params.budget).toBe('45000');
+      expect(params.pace).toBe('Balanced');
+      expect(params.stay).toBe('Heritage Haveli');
+    });
+
+    it('generates grounded route context with highway corridors and zero-blind directives', async () => {
+      const { searchRouteIntelligence, extractTripParameters } = await import('@/lib/route-intelligence.server');
+      const params = extractTripParameters('destination Jaipur; departure city Delhi; 3 days');
+      const grounding = await searchRouteIntelligence(params);
+      expect(grounding).toContain('VERIFIED REAL-TIME SEARCH & ROUTE GROUNDING');
+      expect(grounding).toContain('Delhi-Mumbai Expressway (NE4)');
+      expect(grounding).toContain('STRICT GROUNDING & LOGICAL ITINERARY DIRECTIVES');
+      expect(grounding).toContain('Exact Highway Names & Distances');
+    });
+
+    it('confirms server stream assistant wires searchRouteIntelligence and web search tools', () => {
+      const serverCode = fs.readFileSync(path.join(ROOT_DIR, 'src/lib/integrated-ai.server.ts'), 'utf-8');
+      expect(serverCode).toContain('searchRouteIntelligence');
+      expect(serverCode).toContain('extractTripParameters');
+      expect(serverCode).toContain('deepseek_web_search');
+      expect(serverCode).toContain('routeGrounding');
+    });
+  });
 });

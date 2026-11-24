@@ -211,7 +211,7 @@ const STAY_OPTIONS = [
 const LOADING_STAGES = [
   {
     title: 'Connecting to Collabcar AI Engine...',
-    description: 'Initializing neural road intelligence stream and highway terrain data',
+    description: 'Searching live highway corridors, expressway conditions & real-time travel hours',
     icon: Wifi,
   },
   {
@@ -221,17 +221,17 @@ const LOADING_STAGES = [
   },
   {
     title: 'Configuring AITP chauffeur logistics...',
-    description: 'Matching route mileage with safe driving limits, fuel & mandatory rest halts',
+    description: 'Matching route mileage with safe driving limits, verified pitstops & rest halts',
     icon: Car,
   },
   {
     title: 'Curating day-by-day stops & stays...',
-    description: 'Sequencing morning landmarks, lunch pitstops & sunset golden hour halts',
+    description: 'Sequencing morning landmarks, authentic dhabas & handpicked heritage stays',
     icon: MapPin,
   },
   {
     title: 'Finalizing transparent budget breakdown...',
-    description: 'Itemizing vehicle fuel, state road taxes, tolls & driver allowances',
+    description: 'Itemizing vehicle fuel, interstate road taxes, FASTag tolls & driver allowances',
     icon: Coins,
   },
 ];

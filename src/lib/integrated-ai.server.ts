@@ -16,6 +16,7 @@ import { apiError } from '@/lib/api.server';
 import logger from '@/lib/logger.server';
 import { pocketbaseAdmin } from '@/lib/pocketbase-client.server';
 import { clientIdentifier, createRateLimiter } from '@/lib/rate-limit.server';
+import { extractTripParameters, searchRouteIntelligence } from '@/lib/route-intelligence.server';
 
 export type ContentBlock =
 	| { type: 'text'; text: string }
@@ -442,7 +443,7 @@ export const streamAssistant = async ({
 
 	const deepseekApiKey = process.env.DEEPSEEK_API_KEY || process.env.INTEGRATED_AI_API_KEY;
 	const deepseekApiUrl = process.env.DEEPSEEK_API_URL || 'https://api.deepseek.com';
-	const deepseekModel = process.env.DEEPSEEK_MODEL || 'deepseek-chat';
+	const deepseekModel = process.env.DEEPSEEK_MODEL || 'deepseek-flash';
 
 	// Extract prompt text
 	const userPromptText = userMessage
@@ -450,11 +451,24 @@ export const streamAssistant = async ({
 		.map(b => b.text)
 		.join('\n');
 
+	// Real-time Route Intelligence Pre-Search & Grounding
+	const tripParams = extractTripParameters(userPromptText);
+	let routeGrounding = '';
+	try {
+		routeGrounding = await searchRouteIntelligence(tripParams, deepseekApiKey, deepseekApiUrl);
+	} catch (groundingErr) {
+		logger.warn('[integrated-ai] Route intelligence pre-search non-fatal warning:', groundingErr);
+	}
+
 	// If DeepSeek API key is available, stream directly from DeepSeek!
 	if (deepseekApiKey) {
 		const promptMessages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }> = [
 			{ role: 'system', content: systemPrompt },
 		];
+
+		if (routeGrounding) {
+			promptMessages.push({ role: 'system', content: routeGrounding });
+		}
 
 		if (userId) {
 			try {
@@ -472,19 +486,50 @@ export const streamAssistant = async ({
 
 		promptMessages.push({ role: 'user', content: userPromptText });
 
-		const response = await fetch(`${deepseekApiUrl}/chat/completions`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'Authorization': `Bearer ${deepseekApiKey}`,
-			},
-			body: JSON.stringify({
-				model: deepseekModel,
-				messages: promptMessages,
-				stream: true,
-				temperature: 0.7,
-			}),
-		});
+		let response: Response;
+		try {
+			// First attempt with native web search tools enabled
+			response = await fetch(`${deepseekApiUrl}/chat/completions`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `Bearer ${deepseekApiKey}`,
+				},
+				body: JSON.stringify({
+					model: deepseekModel,
+					messages: promptMessages,
+					tools: [
+						{ type: 'deepseek_web_search', name: 'deepseek_web_search' }
+					],
+					stream: true,
+					temperature: 0.7,
+				}),
+			});
+
+			// If the specific model doesn't support the tools parameter (400), gracefully fallback without tools
+			if (!response.ok && response.status === 400) {
+				const errBody = await response.clone().text().catch(() => '');
+				if (errBody.includes('tool')) {
+					logger.warn('[integrated-ai] Tools not supported by model; streaming with pre-searched grounding only');
+					response = await fetch(`${deepseekApiUrl}/chat/completions`, {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+							'Authorization': `Bearer ${deepseekApiKey}`,
+						},
+						body: JSON.stringify({
+							model: deepseekModel,
+							messages: promptMessages,
+							stream: true,
+							temperature: 0.7,
+						}),
+					});
+				}
+			}
+		} catch (fetchErr) {
+			logger.error('[integrated-ai] Failed to connect to DeepSeek API:', fetchErr);
+			throw fetchErr;
+		}
 
 		if (!response.ok || !response.body) {
 			const details = await response.text().catch(() => 'unknown error');
@@ -565,27 +610,60 @@ export const streamAssistant = async ({
 		});
 	}
 
-	// Fallback to legacy mock if no API key is provided
-	const mockResponse = `Here is your customised India travel itinerary based on your preferences:\n\n`
-		+ `### Day 1: Arrival & Orientation\n`
-		+ `- Smooth arrival and transfer to your handpicked stay.\n`
-		+ `- Afternoon leisure time to settle in and explore nearby neighbourhood highlights.\n`
-		+ `- Evening traditional dinner with local regional flavours.\n\n`
-		+ `### Day 2: Culture & Heritage Explorations\n`
-		+ `- Morning visit to prominent cultural landmarks and architecture.\n`
-		+ `- Authentic lunch at a well-reviewed heritage spot.\n`
-		+ `- Sunset stroll through vibrant local markets.\n\n`
-		+ `### Day 3: Scenic Journey & Panoramic Views\n`
-		+ `- Comfortable private vehicle transfer along scenic routes with planned tea/photo stops.\n`
-		+ `- Check-in at scenic accommodation.\n`
-		+ `- Leisure evening under the stars.\n\n`
-		+ `### Day 4: Curated Local Experiences\n`
-		+ `- Interactive experiences (nature trails, local artisan workshops, or boat ride).\n`
-		+ `- Afternoon relaxation at your pace.\n\n`
-		+ `### Day 5: Farewell & Seamless Departure\n`
-		+ `- Scenic breakfast and souvenir shopping.\n`
-		+ `- Dedicated transfer to the airport or railway station.\n\n`
-		+ `*Note: Estimated group budget is aligned with your specified preferences. Submit an enquiry to connect with our travel coordination team for confirmed pricing, vetted stays, and personalized route modifications.*`;
+	// Fallback structured response if no API key is provided
+	const dest = tripParams.destination || 'Jaipur';
+	const dep = tripParams.departure || 'Delhi';
+	const daysCount = tripParams.days || 3;
+	const budgetTotal = tripParams.budget || '45000';
+
+	const mockResponse = `# ${daysCount}-Day Curated Road Journey: ${dep} to ${dest}
+
+### 🌟 Trip Overview & Highlights
+- **Destination:** ${dest}
+- **Route Summary:** ${dep} ➔ Verified Highway Corridor ➔ ${dest}
+- **Optimal Season & Weather:** October to March, pleasant road conditions
+- **Travel Pace:** ${tripParams.pace || 'Balanced'}
+- **Recommended Vehicle:** Toyota Innova Crysta / Luxury Urbania with Commercial AITP Chauffeur
+
+### 🗓️ Day-by-Day Itinerary
+
+#### Day 1: Departure from ${dep} & Scenic Arrival in ${dest}
+- **🚗 Transit & Distance:** ~260 km · ~4.5 hrs drive via modern highway corridor
+- **🌅 Morning:** Prompt morning departure from ${dep}. Refreshing highway breakfast stop at clean wayside amenity.
+- **☀️ Afternoon:** Arrival in ${dest}, smooth check-in at handpicked stay, and traditional regional lunch.
+- **🌆 Evening & Sunset:** Sunset viewpoint visit, heritage bazaar walk, and evening culinary orientation.
+- **🏨 Handpicked Stay:** ${tripParams.stay || 'Heritage Haveli / Boutique Stay'}
+
+#### Day 2: Signature Heritage & Cultural Highlights
+- **🚗 Transit & Distance:** ~45 km local exploration with dedicated commercial chauffeur
+- **🌅 Morning:** Guided morning visit to prominent architectural landmarks and royal courtyards.
+- **☀️ Afternoon:** Authentic regional thali lunch at a verified heritage eatery; afternoon artisan workshops.
+- **🌆 Evening & Sunset:** Panoramic scenic viewpoint or lakeside walk followed by traditional dinner.
+- **🏨 Handpicked Stay:** ${tripParams.stay || 'Heritage Haveli / Boutique Stay'}
+
+#### Day 3: Scenic Excursions & Smooth Return
+- **🚗 Transit & Distance:** ~260 km return drive with planned scenic halts
+- **🌅 Morning:** Leisure breakfast, souvenir shopping, and local photo stop.
+- **☀️ Afternoon:** Relaxed return journey towards ${dep} with planned tea and snack halts.
+- **🌆 Evening & Sunset:** Seamless drop-off at your departure address.
+- **🏨 Handpicked Stay:** Home sweet home
+
+### 💰 Estimated Budget Breakdown (Group of ${tripParams.travellers || 2} in ₹ INR)
+| Expense Category | Estimated Cost (₹) | What is Included |
+|---|---|---|
+| Dedicated Chauffeured Fleet & Fuel | ₹18,500 | Dedicated commercial vehicle, verified driver, fuel & allowances |
+| State Border Taxes & Highway Tolls | ₹3,200 | Commercial passenger interstate permits & FASTag tolls |
+| Handpicked Stays & Breakfast | ₹16,500 | Verified boutique / heritage accommodations |
+| Sightseeing, Entry Tickets & Meals | ₹6,800 | Monument entries, activities & dining estimates |
+| **Estimated Total** | **₹${budgetTotal}** | **All-inclusive road travel estimate** |
+
+### 💡 Chauffeur Insider Tips & Route Advice
+- Prefer early morning departures (06:00-06:30 AM) to clear city toll plazas before commuter rush.
+- Collabcar vehicles carry verified AITP commercial permits with zero on-road border tax delays.
+- Carry reusable water bottles; all vehicles are equipped with first aid and mobile charging ports.
+- Local handicraft cooperatives near heritage monuments offer direct artisan pricing.
+
+*Note: This is an AI-crafted itinerary draft with indicative costs. Submit an enquiry to connect with Collabcar's operations team to lock in verified chauffeurs, vetted boutique properties, and customized route modifications.*`;
 
 	const chunks = mockResponse.split(/(?<=\s)/);
 
